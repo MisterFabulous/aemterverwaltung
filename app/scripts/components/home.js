@@ -1,71 +1,76 @@
 import React from 'react';
 
-export default class extends React.Component {
-    constructor(props) {
-	super(props);
-	this.state = {
-	    semester: {
-		name: 'WS 15/16',
-		alania: {
-		    vorstand: {
-			X: 'Jan Philip Schulze-Ardey',
-			FM: 'Philip Bredol',
-		        VX: 'Lukas Heinen',
-			XX: 'Daniel Schürmann',
-			XXX: 'Patrick Köhnen'
-		    }
-		},
-		laetitia: {
-		    vorstand: {
-			X: 'Jan Philip Schulze-Ardey',
-			FM: 'Philip Bredol',
-			VX: 'Lukas Heinen',
-			XX: 'Daniel Schürmann',
-			XXX: 'Patrick Köhnen'
-		    }
-		},
-		haus: {
-		    Vereinsgericht: ['Tim Kempen', 'Michael Janssen', 'Bertram Buchholz'],
-		    DCA: ['Samuel Schulte', 'Bernhard Lüttgenau', 'Andre Flemming']
-		}
-	    }
-	};
+var SEMESTER = {
+    name: 'WS 15/16',
+    alania: {
+	vorstand: {
+	    X: 'Jan Philip Schulze-Ardey',
+	    FM: 'Philip Bredol',
+	    VX: 'Lukas Heinen',
+	    XX: 'Daniel Schürmann',
+	    XXX: 'Patrick Köhnen'
+	}
+    },
+    laetitia: {
+	vorstand: {
+	    X: 'Jan Philip Schulze-Ardey',
+	    FM: 'Philip Bredol',
+	    VX: 'Lukas Heinen',
+	    XX: 'Daniel Schürmann',
+	    XXX: 'Patrick Köhnen'
+	}
+    },
+    haus: {
+	Vereinsgericht: ['Tim Kempen', 'Michael Janssen', 'Bertram Buchholz'],
+	DCA: ['Samuel Schulte', 'Bernhard Lüttgenau', 'Andre Flemming']
     }
+};
 
+class Amt extends React.Component {
     render() {
-	return (
-	    <div>
-	    {this.renderVorstand('Alanenvorstand', this.state.semester.alania.vorstand)}
-	    {this.renderVorstand('Laetizenvorstand', this.state.semester.laetitia.vorstand)}
-	    {this.renderHaus(this.state.semester.haus)}
-	    </div>
-	);
+	return <tr><td>{this.props.description}</td><td>{this.props.name}</td></tr>;
     }
+}
 
-    renderVorstand(title, vorstand) {
-	return (
-	    <div className="panel panel-default">
-  	    <div className="panel-heading">{title}</div>
-	    <ul className="list-group">
-	    {_.mapObject(vorstand, (person,amt) => this.renderAmt(amt, person))}
-	    </ul>
-	    </div>
-	);
-    }
-
-    renderHaus(haus) {
+class Haus extends React.Component {
+    render() {
 	return (
 	    <div className="panel panel-default">
   	    <div className="panel-heading">Hausämter</div>
-	    <ul className="list-group">
-	    {_.mapObject(haus, (persons,amt) => this.renderAmt(amt, persons.join(', ')))}
-	    </ul>
+	    <table className="table">
+	    {_.mapObject(this.props.haus, (persons,amt) => <Amt description={amt} name={persons.join(', ')} />)}
+	    </table>
 	    </div>
 	);
-
     }
+}
 
-    renderAmt(description, name) {
-	return <li className="list-group-item">{description}: {name}</li>
+class Vorstand extends React.Component {
+    render() {
+	return (
+	    <div className="panel panel-default">
+  	    <div className="panel-heading">{this.props.title}</div>
+	    <table className="table">
+	    {_.mapObject(this.props.vorstand, (person,amt) => <Amt description={amt} name={person} />)}
+	    </table>
+	    </div>
+	);
+    }
+}
+
+export default class extends React.Component {
+    render() {
+	return (
+	    <div className="panel panel-default">
+	    <div className="panel-heading">{SEMESTER.name}</div>
+	    <div className="panel-body">
+	    <div className="row">
+	    <div className="col-xs-6"><Vorstand title="Alanenvorstand" vorstand={SEMESTER.alania.vorstand} /></div>
+	    <div className="col-xs-6"><Vorstand title="Laetizenvorstand" vorstand={SEMESTER.laetitia.vorstand} /></div>
+	    </div>
+	    <Haus haus={SEMESTER.haus} />
+	    </div>
+	    </div>
+	);
     }
 }
