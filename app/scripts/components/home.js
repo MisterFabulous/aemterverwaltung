@@ -26,13 +26,13 @@ var SEMESTER = {
     }
 };
 
-class Amt extends React.Component {
+var Amt = React.createClass({
     render() {
 	return <tr><td>{this.props.description}</td><td>{this.props.name}</td></tr>;
     }
-}
+});
 
-class Haus extends React.Component {
+var Haus = React.createClass({
     render() {
 	return (
 	    <div className="panel panel-default">
@@ -43,9 +43,9 @@ class Haus extends React.Component {
 	    </div>
 	);
     }
-}
+});
 
-class Vorstand extends React.Component {
+var Vorstand = React.createClass({
     render() {
 	return (
 	    <div className="panel panel-default">
@@ -56,7 +56,7 @@ class Vorstand extends React.Component {
 	    </div>
 	);
     }
-}
+});
 
 export default class extends React.Component {
     render() {
