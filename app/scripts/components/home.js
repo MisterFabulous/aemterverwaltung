@@ -1,76 +1,103 @@
 import React from 'react';
-
-var SEMESTER = {
-    name: 'WS 15/16',
-    alania: {
-	vorstand: {
-	    X: 'Jan Philip Schulze-Ardey',
-	    FM: 'Philip Bredol',
-	    VX: 'Lukas Heinen',
-	    XX: 'Daniel Schürmann',
-	    XXX: 'Patrick Köhnen'
-	}
-    },
-    laetitia: {
-	vorstand: {
-	    X: 'Jan Philip Schulze-Ardey',
-	    FM: 'Philip Bredol',
-	    VX: 'Lukas Heinen',
-	    XX: 'Daniel Schürmann',
-	    XXX: 'Patrick Köhnen'
-	}
-    },
-    haus: {
-	Vereinsgericht: ['Tim Kempen', 'Michael Janssen', 'Bertram Buchholz'],
-	DCA: ['Samuel Schulte', 'Bernhard Lüttgenau', 'Andre Flemming']
-    }
-};
+import _ from 'underscore';
+import $ from 'jquery';
 
 var Amt = React.createClass({
     render() {
-	return <tr><td>{this.props.description}</td><td>{this.props.name}</td></tr>;
+	return (
+	    <tr>
+	      <td>
+		{this.props.description}
+	      </td>
+	      <td>
+		{this.props.name}
+	      </td>
+	    </tr>
+	);
     }
 });
 
-var Haus = React.createClass({
+var createAemter = (hausaemter) =>
+    _.mapObject(hausaemter, (persons,amt) => <Amt description={amt} name={_.flatten([persons]).join(', ')} />);
+
+var Aemteraufstellung = React.createClass({
     render() {
 	return (
-	    <div className="panel panel-default">
-  	    <div className="panel-heading">Hausämter</div>
-	    <table className="table">
-	    {_.mapObject(this.props.haus, (persons,amt) => <Amt description={amt} name={persons.join(', ')} />)}
-	    </table>
+	    <div className={"panel panel-default " + this.props.frat}>
+  	      <div className="panel-heading">
+		{this.props.title}
+	      </div>
+	      <table className="table">
+		{createAemter(this.props.aemter)}
+	      </table>
 	    </div>
 	);
     }
 });
 
-var Vorstand = React.createClass({
+export var Semester = React.createClass({
+    getInitialState() {
+	return {
+	    semester: {
+		name: '',
+		alania: {
+		    vorstand: {
+			X: '',
+			FM: '',
+			VX: '',
+			XX: '',
+			XXX: ''
+		    },
+		    klein: {
+			Vereinsgericht: [],
+			DCA: []
+		    }
+		},
+		laetitia: {
+		    vorstand: {
+			X: '',
+			FM: '',
+			VX: '',
+			XX: '',
+			XXX: ''
+		    },
+		    klein: {
+			Homepage: []
+		    }
+		},
+		haus: {
+		    Bier: [],
+		    BA: []
+		}
+	    }
+	};
+    },
+    componentDidMount() {
+	this.serverRequest = $.get("http://localhost:3000/semester?name=" + this.props.name, (result) => {
+	    this.setState({semester: result});
+	}.bind(this));
+    },
+    componentWillUnmount() {
+	this.serverRequest.abort();
+    },
     render() {
 	return (
-	    <div className="panel panel-default">
-  	    <div className="panel-heading">{this.props.title}</div>
-	    <table className="table">
-	    {_.mapObject(this.props.vorstand, (person,amt) => <Amt description={amt} name={person} />)}
-	    </table>
+	    <div className="panel panel-default semester">
+	      <div className="panel-heading">{this.state.semester.name}</div>
+	      <div className="panel-body">
+		<div className="row">
+		  <div className="col-xs-6">
+		    <Aemteraufstellung title="Alanenvorstand" aemter={this.state.semester.alania.vorstand} frat="aln" />
+		    <Aemteraufstellung title="Alanenämter" aemter={this.state.semester.alania.klein} frat="aln" />
+		  </div>
+		  <div className="col-xs-6">
+		    <Aemteraufstellung title="Laetizenvorstand" aemter={this.state.semester.laetitia.vorstand} frat="lae" />
+		    <Aemteraufstellung title="Laetizenämter" aemter={this.state.semester.laetitia.klein} frat="lae" />
+		  </div>
+		</div>
+		<Aemteraufstellung title="Hausämter" aemter={this.state.semester.haus} frat="haus" />
+	      </div>
 	    </div>
 	);
     }
 });
-
-export default class extends React.Component {
-    render() {
-	return (
-	    <div className="panel panel-default">
-	    <div className="panel-heading">{SEMESTER.name}</div>
-	    <div className="panel-body">
-	    <div className="row">
-	    <div className="col-xs-6"><Vorstand title="Alanenvorstand" vorstand={SEMESTER.alania.vorstand} /></div>
-	    <div className="col-xs-6"><Vorstand title="Laetizenvorstand" vorstand={SEMESTER.laetitia.vorstand} /></div>
-	    </div>
-	    <Haus haus={SEMESTER.haus} />
-	    </div>
-	    </div>
-	);
-    }
-}

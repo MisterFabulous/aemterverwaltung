@@ -1,7 +1,7 @@
 import React from 'react';
-import Home from './components/home';
+import {Semester} from './components/home';
 
 window.React = React;
 const mountNode = document.getElementById('app');
 
-React.render(<Home/>, mountNode);
+React.render(<Semester name="SS15" />, mountNode);

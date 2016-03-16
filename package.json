@@ -1,7 +1,12 @@
 {
   "name": "react",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.13.4",
+    "jquery": "^2.2.1",
+    "underscore": "^1.8.3",
+    "x-editable": "^1.5.1"
+  },
   "devDependencies": {
     "babel-jest": "^5.0.1",
     "babelify": "^6.0.2",

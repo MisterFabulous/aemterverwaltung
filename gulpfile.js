@@ -138,7 +138,7 @@ gulp.task('test', ['jest']);
 
 gulp.task('default', ['build']);
 
-gulp.task('watch', sync(['clean-bundle', 'serve']), function() {
+gulp.task('watch', sync(['clean-bundle'/* Instead manual node app.js: , 'serve' */]), function() {
   bundler.watch();
   gulp.watch('app/*.html', ['html']);
   gulp.watch('app/styles/**/*.scss', ['styles']);
