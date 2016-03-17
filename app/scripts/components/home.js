@@ -17,8 +17,12 @@ var Amt = React.createClass({
     }
 });
 
-var createAemter = (hausaemter) =>
-    _.mapObject(hausaemter, (persons,amt) => <Amt description={amt} name={_.flatten([persons]).join(', ')} />);
+var fullname = (person) =>
+	person.firstname + ' ' + person.lastname;
+var belegungsliste = (belegungen) =>
+	_.groupBy(belegungen, (belegung) => belegung.amt);
+var createBelegungen = (belegungen) =>
+	_.mapObject(belegungsliste(belegungen), (persons,amt) => <Amt description={amt} name={persons.map(fullname).join(', ')} />);
 
 var Aemteraufstellung = React.createClass({
     render() {
@@ -28,53 +32,22 @@ var Aemteraufstellung = React.createClass({
 		{this.props.title}
 	      </div>
 	      <table className="table">
-		{createAemter(this.props.aemter)}
+		{createBelegungen(this.props.aemter)}
 	      </table>
 	    </div>
 	);
     }
 });
 
+var isVorstand = (amt) => _.contains(['X', 'XX', 'XXX', 'VX', 'FM'], amt);
+
 export var Semester = React.createClass({
     getInitialState() {
-	return {
-	    semester: {
-		name: '',
-		alania: {
-		    vorstand: {
-			X: '',
-			FM: '',
-			VX: '',
-			XX: '',
-			XXX: ''
-		    },
-		    klein: {
-			Vereinsgericht: [],
-			DCA: []
-		    }
-		},
-		laetitia: {
-		    vorstand: {
-			X: '',
-			FM: '',
-			VX: '',
-			XX: '',
-			XXX: ''
-		    },
-		    klein: {
-			Homepage: []
-		    }
-		},
-		haus: {
-		    Bier: [],
-		    BA: []
-		}
-	    }
-	};
+	return { belegungen: [] };
     },
     componentDidMount() {
-	this.serverRequest = $.get("http://localhost:3000/semester?name=" + this.props.name, (result) => {
-	    this.setState({semester: result});
+	this.serverRequest = $.get("http://localhost:3000/belegungen?semester=" + this.props.name, (result) => {
+	    this.setState({belegungen: result});
 	}.bind(this));
     },
     componentWillUnmount() {
@@ -83,19 +56,19 @@ export var Semester = React.createClass({
     render() {
 	return (
 	    <div className="panel panel-default semester">
-	      <div className="panel-heading">{this.state.semester.name}</div>
+	      <div className="panel-heading">{this.props.name}</div>
 	      <div className="panel-body">
 		<div className="row">
 		  <div className="col-xs-6">
-		    <Aemteraufstellung title="Alanenvorstand" aemter={this.state.semester.alania.vorstand} frat="aln" />
-		    <Aemteraufstellung title="Alanenämter" aemter={this.state.semester.alania.klein} frat="aln" />
+		    <Aemteraufstellung title="Alanenvorstand" aemter={this.state.belegungen.filter((b) => b.frat == 'alania' && isVorstand(b.amt))} frat="aln" />
+		    <Aemteraufstellung title="Alanenämter" aemter={this.state.belegungen.filter((b) => b.frat == 'alania' && !isVorstand(b.amt))} frat="aln" />
 		  </div>
 		  <div className="col-xs-6">
-		    <Aemteraufstellung title="Laetizenvorstand" aemter={this.state.semester.laetitia.vorstand} frat="lae" />
-		    <Aemteraufstellung title="Laetizenämter" aemter={this.state.semester.laetitia.klein} frat="lae" />
+		    <Aemteraufstellung title="Laetizenvorstand" aemter={this.state.belegungen.filter((b) => b.frat == 'laetitia' && isVorstand(b.amt))} frat="lae" />
+		    <Aemteraufstellung title="Laetizenämter" aemter={this.state.belegungen.filter((b) => b.frat == 'laetitia' && !isVorstand(b.amt))} frat="lae" />
 		  </div>
 		</div>
-		<Aemteraufstellung title="Hausämter" aemter={this.state.semester.haus} frat="haus" />
+		<Aemteraufstellung title="Hausämter" aemter={this.state.belegungen.filter((b) => b.frat == 'haus')} frat="haus" />
 	      </div>
 	    </div>
 	);

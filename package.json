@@ -4,6 +4,7 @@
   "dependencies": {
     "express": "^4.13.4",
     "jquery": "^2.2.1",
+    "mongodb": "^2.1.7",
     "underscore": "^1.8.3",
     "x-editable": "^1.5.1"
   },
