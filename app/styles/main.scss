@@ -8,19 +8,19 @@ $aln-black: #000;
 $lae-blue: blue;
 
 body {
-  background: brown;
+  background: white;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
 }
 
-.aln.panel {
+.aln {
     background: $aln-blue;
     > .panel-heading {
 	background: $aln-silver;
     }
 }
 
-.lae.panel {
+.lae {
     background: $lae-blue;
     color: $aln-silver;
     > .panel-heading {
