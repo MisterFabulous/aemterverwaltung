@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
+import InlineEdit from 'react-edit-inline';
 
 var Amt = React.createClass({
     render() {
@@ -97,6 +98,13 @@ export var Semesterauswahl = React.createClass({
 		</form>
 	      </nav>
 	      <Semester name={this.state.semester} belegungen={this.state.belegungen} />
+	      <InlineEdit
+		 validate={text => true}
+		activeClassName="editing"
+		text={this.state.semester}
+		paramName="semester"
+		change={data => {}}
+		/>
 	    </div>
 	);
     }
