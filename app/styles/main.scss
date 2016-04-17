@@ -15,32 +15,16 @@ body {
 
 .aln {
     background: $aln-blue;
-    > .panel-heading {
-	background: $aln-silver;
-    }
 }
 
 .lae {
     background: $lae-blue;
     color: $aln-silver;
-    > .panel-heading {
-	background: $aln-silver;
-    }
 }
 
-.haus.panel {
-    background: green;
-    > .panel-heading {
-	background: black;
-	color: white;
-    }
-}
-
-.semester.panel {
-    background: orange;
-    > .panel-heading {
-	background: red;
-    }
+.haus {
+    background: black;
+    color: white;
 }
 
 .hero-unit {
