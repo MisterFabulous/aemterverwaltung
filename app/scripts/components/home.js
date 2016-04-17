@@ -66,15 +66,20 @@ var Semester = (props) => {
     );
 };
 
+var serverURL = "http://localhost:3000/";
+
+var createSemesterOption = semester => <option value={semester}>{semester}</option>;
+
 export var Semesterauswahl = React.createClass({
     getInitialState() {
 	return {
 	    belegungen: [],
-	    semester: "SS16"
+	    semester: "SS16",
+	    availableSemester: []
 	};
     },
-    requestSemesterData(semester) {
-	this.serverRequest = $.get("http://localhost:3000/belegungen?semester=" + semester, (result => {
+    requestBelegungen(semester) {
+	this.serverRequest = $.get(serverURL + "belegungen?semester=" + semester, (result => {
 	    this.setState({
 		belegungen: result,
 		semester: semester
@@ -82,14 +87,20 @@ export var Semesterauswahl = React.createClass({
 	}));
     },
     componentDidMount() {
-	this.requestSemesterData(this.state.semester);
+	this.requestBelegungen(this.state.semester);
+	this.semesterRequest = $.get(serverURL + "semester", (result => {
+	    this.setState({
+		availableSemester: result
+	    });
+	}));
 	$("#semesterform").submit(e => {
-	    this.requestSemesterData($("#semesterformval").val());
+	    this.requestBelegungen($("#semesterformval").val());
 	    e.preventDefault();
 	});
     },
     componentWillUnmount() {
 	this.serverRequest.abort();
+	this.semesterRequest.abort();
     },
     render() {
 	return (
@@ -97,7 +108,9 @@ export var Semesterauswahl = React.createClass({
 	      <nav className="navbar navbar-default">
 		<form className="navbar-form navbar-left" role="search" id="semesterform">
 		  <div className="form-group">
-		    <input type="text" className="form-control" placeholder="Search" id="semesterformval" />
+		    <select defaultValue={this.state.semester} id="semesterformval">
+		      {this.state.availableSemester.map(createSemesterOption)}
+		    </select>
 		  </div>
 		  <button type="submit" className="btn btn-default">Submit</button>
 		</form>
