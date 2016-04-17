@@ -53,10 +53,7 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('html', function() {
-  var assets = $.useref.assets();
   return gulp.src('app/*.html')
-    .pipe(assets)
-    .pipe(assets.restore())
     .pipe($.useref())
     .pipe(gulp.dest('dist'))
     .pipe($.size());
