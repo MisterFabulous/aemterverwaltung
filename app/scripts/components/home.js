@@ -5,20 +5,18 @@ import InlineEdit from 'react-edit-inline';
 import _ from 'underscore';
 import $ from 'jquery';
 
-var Amt = React.createClass({
-    render() {
-	return (
-	    <tr>
-	      <td>
-		{this.props.description}
-	      </td>
-	      <td>
-		{this.props.name}
-	      </td>
-	    </tr>
-	);
-    }
-});
+var Amt = (props) => {
+    return (
+	<tr>
+	  <td>
+	    {props.description}
+	  </td>
+	  <td>
+	    {props.name}
+	  </td>
+	</tr>
+    );
+};
 
 var fullname = (person) =>
 	person.firstname + ' ' + person.lastname;
@@ -27,50 +25,46 @@ var belegungsliste = (belegungen) =>
 var createBelegungen = (belegungen) =>
 	_.values(_.mapObject(belegungsliste(belegungen), (persons,amt) => <Amt description={amt} name={persons.map(fullname).join(', ')} />));
 
-var Aemteraufstellung = React.createClass({
-    render() {
-	return (
-	    <div className={this.props.frat + ' well'}>
-  	      <h3>
-		{this.props.title}
-	      </h3>
-	      <table className="table">
-		<tbody>
-		  {createBelegungen(this.props.aemter)}
-		</tbody>
-	      </table>
-	    </div>
-	);
-    }
-});
+var Aemteraufstellung = (props) => {
+    return (
+	<div className={props.frat + ' well'}>
+  	  <h3>
+	    {props.title}
+	  </h3>
+	  <table className="table">
+	    <tbody>
+	      {createBelegungen(props.aemter)}
+	    </tbody>
+	  </table>
+	</div>
+    );
+};
 
 var isVorstand = (amt) => _.contains(['X', 'XX', 'XXX', 'VX', 'FM'], amt);
 
-var Semester = React.createClass({
-    render() {
-	return (
-	    <div className="semester">
-	      <div className="row">
-		<div className="col-sm-6">
-		  <Aemteraufstellung title="Alanenvorstand" aemter={this.props.belegungen.filter((b) => b.frat == 'alania' && isVorstand(b.amt))} frat="aln" />
-		</div>
-		<div className="col-sm-6">
-		  <Aemteraufstellung title="Laetizenvorstand" aemter={this.props.belegungen.filter((b) => b.frat == 'laetitia' && isVorstand(b.amt))} frat="lae" />
-		</div>
-	      </div>
-	      <div className="row">
-		<div className="col-sm-6">
-		  <Aemteraufstellung title="Alanenämter" aemter={this.props.belegungen.filter((b) => b.frat == 'alania' && !isVorstand(b.amt))} frat="aln" />
-		</div>
-		<div className="col-sm-6">
-		  <Aemteraufstellung title="Laetizenämter" aemter={this.props.belegungen.filter((b) => b.frat == 'laetitia' && !isVorstand(b.amt))} frat="lae" />
-		</div>
-	      </div>
-		<Aemteraufstellung title="Hausämter" aemter={this.props.belegungen.filter((b) => b.frat == 'haus')} frat="haus" />
+var Semester = (props) => {
+    return (
+	<div className="semester">
+	  <div className="row">
+	    <div className="col-sm-6">
+	      <Aemteraufstellung title="Alanenvorstand" aemter={props.belegungen.filter((b) => b.frat == 'alania' && isVorstand(b.amt))} frat="aln" />
 	    </div>
-	);
-    }
-});
+	    <div className="col-sm-6">
+	      <Aemteraufstellung title="Laetizenvorstand" aemter={props.belegungen.filter((b) => b.frat == 'laetitia' && isVorstand(b.amt))} frat="lae" />
+	    </div>
+	  </div>
+	  <div className="row">
+	    <div className="col-sm-6">
+	      <Aemteraufstellung title="Alanenämter" aemter={props.belegungen.filter((b) => b.frat == 'alania' && !isVorstand(b.amt))} frat="aln" />
+	    </div>
+	    <div className="col-sm-6">
+	      <Aemteraufstellung title="Laetizenämter" aemter={props.belegungen.filter((b) => b.frat == 'laetitia' && !isVorstand(b.amt))} frat="lae" />
+	    </div>
+	  </div>
+	  <Aemteraufstellung title="Hausämter" aemter={props.belegungen.filter((b) => b.frat == 'haus')} frat="haus" />
+	</div>
+    );
+};
 
 export var Semesterauswahl = React.createClass({
     getInitialState() {
