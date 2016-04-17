@@ -73,13 +73,20 @@ export var Semesterauswahl = React.createClass({
 	    semester: "SS16"
 	};
     },
-    componentDidMount() {
-	this.serverRequest = $.get("http://localhost:3000/belegungen?semester=" + this.state.semester, (result => {
+    requestSemesterData(semester) {
+	this.serverRequest = $.get("http://localhost:3000/belegungen?semester=" + semester, (result => {
 	    this.setState({
 		belegungen: result,
-		semester: this.state.semester
+		semester: semester
 	    });
 	}));
+    },
+    componentDidMount() {
+	this.requestSemesterData(this.state.semester);
+	$("#semesterform").submit(e => {
+	    this.requestSemesterData($("#semesterformval").val());
+	    e.preventDefault();
+	});
     },
     componentWillUnmount() {
 	this.serverRequest.abort();
@@ -88,9 +95,9 @@ export var Semesterauswahl = React.createClass({
 	return (
 	    <div>
 	      <nav className="navbar navbar-default">
-		<form className="navbar-form navbar-left" role="search">
+		<form className="navbar-form navbar-left" role="search" id="semesterform">
 		  <div className="form-group">
-		    <input type="text" className="form-control" placeholder="Search" />
+		    <input type="text" className="form-control" placeholder="Search" id="semesterformval" />
 		  </div>
 		  <button type="submit" className="btn btn-default">Submit</button>
 		</form>
