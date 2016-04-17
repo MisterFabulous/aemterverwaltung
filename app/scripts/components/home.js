@@ -1,7 +1,9 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+import InlineEdit from 'react-edit-inline';
+
 import _ from 'underscore';
 import $ from 'jquery';
-import InlineEdit from 'react-edit-inline';
 
 var Amt = React.createClass({
     render() {
@@ -23,7 +25,7 @@ var fullname = (person) =>
 var belegungsliste = (belegungen) =>
 	_.groupBy(belegungen, (belegung) => belegung.amt);
 var createBelegungen = (belegungen) =>
-	_.mapObject(belegungsliste(belegungen), (persons,amt) => <Amt description={amt} name={persons.map(fullname).join(', ')} />);
+	_.values(_.mapObject(belegungsliste(belegungen), (persons,amt) => <Amt description={amt} name={persons.map(fullname).join(', ')} />));
 
 var Aemteraufstellung = React.createClass({
     render() {
@@ -33,7 +35,9 @@ var Aemteraufstellung = React.createClass({
 		{this.props.title}
 	      </h3>
 	      <table className="table">
-		{createBelegungen(this.props.aemter)}
+		<tbody>
+		  {createBelegungen(this.props.aemter)}
+		</tbody>
 	      </table>
 	    </div>
 	);
