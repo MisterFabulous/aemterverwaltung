@@ -5,7 +5,7 @@ import InlineEdit from 'react-edit-inline';
 import _ from 'underscore';
 import $ from 'jquery';
 
-var Amt = (props) => {
+var Amt = props => {
     return (
 	<tr>
 	  <td>
@@ -18,14 +18,14 @@ var Amt = (props) => {
     );
 };
 
-var fullname = (person) =>
+var fullname = person =>
 	person.firstname + ' ' + person.lastname;
-var belegungsliste = (belegungen) =>
-	_.groupBy(belegungen, (belegung) => belegung.amt);
-var createBelegungen = (belegungen) =>
+var belegungsliste = belegungen =>
+	_.groupBy(belegungen, belegung => belegung.amt);
+var createBelegungen = belegungen =>
 	_.values(_.mapObject(belegungsliste(belegungen), (persons,amt) => <Amt description={amt} name={persons.map(fullname).join(', ')} />));
 
-var Aemteraufstellung = (props) => {
+var Aemteraufstellung = props => {
     return (
 	<div className={props.frat + ' well'}>
   	  <h3>
@@ -40,28 +40,28 @@ var Aemteraufstellung = (props) => {
     );
 };
 
-var isVorstand = (amt) => _.contains(['X', 'XX', 'XXX', 'VX', 'FM'], amt);
+var isVorstand = amt => _.contains(['X', 'XX', 'XXX', 'VX', 'FM'], amt);
 
-var Semester = (props) => {
+var Semester = props => {
     return (
 	<div className="semester">
 	  <div className="row">
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Alanenvorstand" aemter={props.belegungen.filter((b) => b.frat == 'alania' && isVorstand(b.amt))} frat="aln" />
+	      <Aemteraufstellung title="Alanenvorstand" aemter={props.belegungen.filter(b => b.frat == 'alania' && isVorstand(b.amt))} frat="aln" />
 	    </div>
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Laetizenvorstand" aemter={props.belegungen.filter((b) => b.frat == 'laetitia' && isVorstand(b.amt))} frat="lae" />
+	      <Aemteraufstellung title="Laetizenvorstand" aemter={props.belegungen.filter(b => b.frat == 'laetitia' && isVorstand(b.amt))} frat="lae" />
 	    </div>
 	  </div>
 	  <div className="row">
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Alanenämter" aemter={props.belegungen.filter((b) => b.frat == 'alania' && !isVorstand(b.amt))} frat="aln" />
+	      <Aemteraufstellung title="Alanenämter" aemter={props.belegungen.filter(b => b.frat == 'alania' && !isVorstand(b.amt))} frat="aln" />
 	    </div>
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Laetizenämter" aemter={props.belegungen.filter((b) => b.frat == 'laetitia' && !isVorstand(b.amt))} frat="lae" />
+	      <Aemteraufstellung title="Laetizenämter" aemter={props.belegungen.filter(b => b.frat == 'laetitia' && !isVorstand(b.amt))} frat="lae" />
 	    </div>
 	  </div>
-	  <Aemteraufstellung title="Hausämter" aemter={props.belegungen.filter((b) => b.frat == 'haus')} frat="haus" />
+	  <Aemteraufstellung title="Hausämter" aemter={props.belegungen.filter(b => b.frat == 'haus')} frat="haus" />
 	</div>
     );
 };
