@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Multiselect from 'react-widgets/lib/Multiselect';
 
 import _ from 'underscore';
 import $ from 'jquery';
@@ -24,16 +25,19 @@ var Amt = React.createClass({
     beginEditing() {
 	this.setState({editing: true});
     },
+    stopEditing(event) {
+	this.setState({editing: false});
+    },
     render () {
 	return (
 	    <tr>
 	      <td>
 		{this.props.amt.name}
 	      </td>
-	      <td onclick="this.beginEditing">
+	      <td>
 		{(() => {
 		    if (this.state.editing) {
-			return null; 
+			return <Multiselect onBlur={this.stopEditing} defaultValue={[]} data={["a", "b"]} />; 
 		    } else {
 			return <div onClick={this.beginEditing}>{this.state.persons.map(fullname).join(', ')}</div>;
 		    }

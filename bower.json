@@ -6,6 +6,7 @@
     "bootstrap-sass-official": "^3.3.2",
     "modernizr": "^2.8.3",
     "bootstrap": "^3.3.6",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "react-widgets": "^3.2.4"
   }
 }

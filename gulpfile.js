@@ -40,7 +40,7 @@ gulp.task('styles', function() {
     return $.rubySass('app/styles/main.scss', {
 	style: 'expanded',
 	precision: 10,
-	loadPath: ['app/bower_components']
+	loadPath: ['app/bower_components', 'node_modules']
     })
 	.on('error', $.util.log.bind($.util, 'Sass Error'))
 	.pipe($.autoprefixer('last 1 version'))
