@@ -9,15 +9,21 @@ var Amt = React.createClass({
     getInitialState() {
 	return {
 	    editing: false,
-	    persons: []
+	    persons: [] // Selected persons for this Amt
 	};
     },
-    componentDidMount() {
+    requestPersons(props) {
 	this.personsRequest = request("belegungen" +
-				      "?semester=" + this.props.semester +
-				      "&amt=" + this.props.amt.name +
-				      "&frat=" + this.props.amt.frat,
+				      "?semester=" + props.semester +
+				      "&amt=" + props.amt.name +
+				      "&frat=" + props.amt.frat,
 				      "persons", this);
+    },
+    componentDidMount() {
+	this.requestPersons(this.props);
+    },
+    componentWillReceiveProps(newProps) {
+	this.requestPersons(newProps);
     },
     componentWillUnmount() {
 	this.personsRequest.abort();
@@ -37,7 +43,7 @@ var Amt = React.createClass({
 	      <td>
 		{(() => {
 		    if (this.state.editing) {
-			return <Multiselect onBlur={this.stopEditing} defaultValue={[]} data={["a", "b"]} />; 
+			return <Multiselect onBlur={this.stopEditing} defaultValue={this.state.persons.map(fullname)} data={this.props.persons.map(fullname)} />; 
 		    } else {
 			return <div onClick={this.beginEditing}>{this.state.persons.map(fullname).join(', ')}</div>;
 		    }
@@ -55,8 +61,8 @@ var amtspersonen = (belegungen, amt) => {
     let list = _.has(tmp, amt) ? tmp[amt] : [];
     return list.map(fullname).join(', ');
 };
-var createBelegungen = (aemter, semester) =>
-	aemter.map(amt => <Amt amt={amt} semester={semester} />);
+var createBelegungen = (aemter, persons, semester) =>
+	aemter.map(amt => <Amt amt={amt} persons={persons} semester={semester} />);
 
 var Aemteraufstellung = props => {
     return (
@@ -66,7 +72,7 @@ var Aemteraufstellung = props => {
 	  </h3>
 	  <table className="table">
 	    <tbody>
-	      {createBelegungen(props.aemter, props.semester)}
+	      {createBelegungen(props.aemter, props.persons, props.semester)}
 	    </tbody>
 	  </table>
 	</div>
@@ -80,31 +86,31 @@ var Semester = props => {
 	<div className="semester">
 	  <div className="row">
 	    <div className="col-sm-6">
-	    <Aemteraufstellung title="Alanenvorstand" frat="alania" semester={props.name}
-				 aemter={props.aemter.filter(a => a.frat == 'alania' && isVorstand(a.name))}
-				 belegungen={props.belegungen.filter(b => b.frat == 'alania' && isVorstand(b.amt))} />
+	      <Aemteraufstellung title="Alanenvorstand" frat="alania" semester={props.name}
+				 persons={props.persons.filter(p => p.frat == 'alania')}
+				 aemter={props.aemter.filter(a => a.frat == 'alania' && isVorstand(a.name))} />
 	    </div>
 	    <div className="col-sm-6">
 	      <Aemteraufstellung title="Laetizenvorstand" frat="laetitia" semester={props.name}
-				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && isVorstand(a.name))}
-				 belegungen={props.belegungen.filter(b => b.frat == 'laetitia' && isVorstand(b.amt))} />
+				 persons={props.persons.filter(p => p.frat == 'laetitia')}
+				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && isVorstand(a.name))} />
 	    </div>
 	  </div>
 	  <div className="row">
 	    <div className="col-sm-6">
 	      <Aemteraufstellung title="Alanenämter" frat="alania" semester={props.name}
-				 aemter={props.aemter.filter(a => a.frat == 'alania' && !isVorstand(a.name))}
-				 belegungen={props.belegungen.filter(b => b.frat == 'alania' && !isVorstand(b.amt))} />
+				 persons={props.persons.filter(p => _.contains(['alania', 'haus'], p.frat))}
+				 aemter={props.aemter.filter(a => a.frat == 'alania' && !isVorstand(a.name))} />
 	    </div>
 	    <div className="col-sm-6">
 	      <Aemteraufstellung title="Laetizenämter" frat="laetitia" semester={props.name}
-				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && !isVorstand(a.name))}
-				 belegungen={props.belegungen.filter(b => b.frat == 'laetitia' && !isVorstand(b.amt))} />
+				 persons={props.persons.filter(p => _.contains(['laetitia', 'haus'], p.frat))}
+				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && !isVorstand(a.name))} />
 	    </div>
 	  </div>
 	  <Aemteraufstellung title="Hausämter" frat="haus" semester={props.name}
-			     aemter={props.aemter.filter(a => a.frat == 'haus')}
-			     belegungen={props.belegungen.filter(b => b.frat == 'haus')} />
+			     persons={props.persons}
+			     aemter={props.aemter.filter(a => a.frat == 'haus')} />
 	</div>
     );
 };
@@ -117,13 +123,11 @@ var request = (query, state, component) =>
 	    });
 	}));
 
-var createSemesterOption = semester => <option value={semester}>{semester}</option>;
-
 export var Semesterauswahl = React.createClass({
     getInitialState() {
 	return {
-	    aemter: [],
-	    belegungen: [],
+	    aemter: [], // name, frat
+	    persons: [], // firstname, lastname, sex, frat
 	    semester: "SS16",
 	    availableSemester: []
 	};
@@ -131,30 +135,33 @@ export var Semesterauswahl = React.createClass({
     componentDidMount() {
 	this.aemterRequest = request("aemter", "aemter", this);
 	this.semesterRequest = request("semester", "availableSemester", this);
-	$("#semesterform").submit(e => {
-	    var semester = $("#semesterformval").val();
-	    this.setState({semester: semester});
-	    e.preventDefault();
-	});
+	this.personsRequest = request("persons", "persons", this);
     },
     componentWillUnmount() {
 	this.aemterRequest.abort();
 	this.semesterRequest.abort();
+	this.personsRequest.abort();
+    },
+    createSemesterOption(semester) {
+	return <option value={semester}>{semester}</option>;
+    },
+    changeSemester(event) {
+	this.setState({semester: event.target.value});
+	event.preventDefault();
     },
     render() {
 	return (
 	    <div>
 	      <nav className="navbar navbar-default">
-		<form className="navbar-form navbar-left" role="search" id="semesterform">
+		<form className="navbar-form navbar-left" role="search">
 		  <div className="form-group">
-		    <select defaultValue={this.state.semester} id="semesterformval">
-		      {this.state.availableSemester.map(createSemesterOption)}
+		    <select defaultValue={this.state.semester} onChange={this.changeSemester}>
+		      {this.state.availableSemester.map(this.createSemesterOption)}
 		    </select>
 		  </div>
-		  <button type="submit" className="btn btn-default">Submit</button>
 		</form>
 	      </nav>
-	      <Semester name={this.state.semester} belegungen={this.state.belegungen} aemter={this.state.aemter} />
+	      <Semester name={this.state.semester} persons={this.state.persons} aemter={this.state.aemter} />
 	      </div>
 	);
     }
