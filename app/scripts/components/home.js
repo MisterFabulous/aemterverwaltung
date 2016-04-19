@@ -5,6 +5,9 @@ import Multiselect from 'react-widgets/lib/Multiselect';
 import _ from 'underscore';
 import $ from 'jquery';
 
+var capitalizeFirstLetter = (word) =>
+    word.charAt(0).toUpperCase() + word.slice(1);
+
 var Amt = React.createClass({
     getInitialState() {
 	return {
@@ -32,7 +35,9 @@ var Amt = React.createClass({
 	this.setState({editing: true});
     },
     stopEditing(event) {
-	this.setState({editing: false});
+	this.setState({
+	    editing: false
+	});
     },
     render () {
 	return (
@@ -42,7 +47,13 @@ var Amt = React.createClass({
 	      </td>
 	      {(() => {
 		  if (this.state.editing) {
-		      return <td><Multiselect onBlur={this.stopEditing} defaultValue={this.state.persons.map(fullname)} data={this.props.persons.map(fullname)} /></td>; 
+		      return <td>
+			  <Multiselect onBlur={this.stopEditing}
+					   defaultValue={this.state.persons}
+					   data={this.props.persons}
+					   textField={fullname}
+					   groupBy={p => capitalizeFirstLetter(p.frat)} />
+			  </td>; 
 		  } else {
 		      return <td onClick={this.beginEditing}>{this.state.persons.map(fullname).join(', ')}</td>;
 		  }
