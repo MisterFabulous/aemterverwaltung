@@ -49,6 +49,7 @@ var Amt = React.createClass({
 		  if (this.state.editing) {
 		      return <td>
 			  <Multiselect onBlur={this.stopEditing}
+					   onChange={persons => this.setState({persons})}
 					   defaultValue={this.state.persons}
 					   data={this.props.persons}
 					   textField={fullname}
