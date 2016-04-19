@@ -1,22 +1,48 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import InlineEdit from 'react-edit-inline';
 
 import _ from 'underscore';
 import $ from 'jquery';
 
-var Amt = props => {
-    return (
-	<tr>
-	  <td>
-	    {props.description}
-	  </td>
-	  <td>
-	    {props.name}
-	  </td>
-	</tr>
-    );
-};
+var Amt = React.createClass({
+    getInitialState() {
+	return {
+	    editing: false,
+	    persons: []
+	};
+    },
+    componentDidMount() {
+	this.personsRequest = request("belegungen" +
+				      "?semester=" + this.props.semester +
+				      "&amt=" + this.props.amt.name +
+				      "&frat=" + this.props.amt.frat,
+				      "persons", this);
+    },
+    componentWillUnmount() {
+	this.personsRequest.abort();
+    },
+    beginEditing() {
+	this.setState({editing: true});
+    },
+    render () {
+	return (
+	    <tr>
+	      <td>
+		{this.props.amt.name}
+	      </td>
+	      <td onclick="this.beginEditing">
+		{(() => {
+		    if (this.state.editing) {
+			return null; 
+		    } else {
+			return <div onClick={this.beginEditing}>{this.state.persons.map(fullname).join(', ')}</div>;
+		    }
+		})()}
+	      </td>
+	    </tr>
+	);
+    }
+});
 
 var fullname = person =>
 	person.firstname + ' ' + person.lastname;
@@ -25,8 +51,8 @@ var amtspersonen = (belegungen, amt) => {
     let list = _.has(tmp, amt) ? tmp[amt] : [];
     return list.map(fullname).join(', ');
 };
-var createBelegungen = (belegungen, aemter) =>
-	aemter.map(amt => <Amt description={amt.name} name={amtspersonen(belegungen, amt.name)} />);
+var createBelegungen = (aemter, semester) =>
+	aemter.map(amt => <Amt amt={amt} semester={semester} />);
 
 var Aemteraufstellung = props => {
     return (
@@ -36,7 +62,7 @@ var Aemteraufstellung = props => {
 	  </h3>
 	  <table className="table">
 	    <tbody>
-	      {createBelegungen(props.belegungen, props.aemter)}
+	      {createBelegungen(props.aemter, props.semester)}
 	    </tbody>
 	  </table>
 	</div>
@@ -50,29 +76,29 @@ var Semester = props => {
 	<div className="semester">
 	  <div className="row">
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Alanenvorstand" frat="aln"
+	    <Aemteraufstellung title="Alanenvorstand" frat="alania" semester={props.name}
 				 aemter={props.aemter.filter(a => a.frat == 'alania' && isVorstand(a.name))}
 				 belegungen={props.belegungen.filter(b => b.frat == 'alania' && isVorstand(b.amt))} />
 	    </div>
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Laetizenvorstand" frat="lae"
+	      <Aemteraufstellung title="Laetizenvorstand" frat="laetitia" semester={props.name}
 				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && isVorstand(a.name))}
 				 belegungen={props.belegungen.filter(b => b.frat == 'laetitia' && isVorstand(b.amt))} />
 	    </div>
 	  </div>
 	  <div className="row">
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Alanenämter" frat="aln"
+	      <Aemteraufstellung title="Alanenämter" frat="alania" semester={props.name}
 				 aemter={props.aemter.filter(a => a.frat == 'alania' && !isVorstand(a.name))}
 				 belegungen={props.belegungen.filter(b => b.frat == 'alania' && !isVorstand(b.amt))} />
 	    </div>
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Laetizenämter" frat="lae"
+	      <Aemteraufstellung title="Laetizenämter" frat="laetitia" semester={props.name}
 				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && !isVorstand(a.name))}
 				 belegungen={props.belegungen.filter(b => b.frat == 'laetitia' && !isVorstand(b.amt))} />
 	    </div>
 	  </div>
-	  <Aemteraufstellung title="Hausämter" frat="haus"
+	  <Aemteraufstellung title="Hausämter" frat="haus" semester={props.name}
 			     aemter={props.aemter.filter(a => a.frat == 'haus')}
 			     belegungen={props.belegungen.filter(b => b.frat == 'haus')} />
 	</div>
@@ -80,6 +106,12 @@ var Semester = props => {
 };
 
 var serverURL = "http://localhost:3000/";
+var request = (query, state, component) =>
+	$.get(serverURL + query, (result => {
+	    component.setState({
+		[state]: result
+	    });
+	}));
 
 var createSemesterOption = semester => <option value={semester}>{semester}</option>;
 
@@ -92,27 +124,17 @@ export var Semesterauswahl = React.createClass({
 	    availableSemester: []
 	};
     },
-    request(query, state) {
-	return $.get(serverURL + query, (result => {
-	    this.setState({
-		[state]: result
-	    });
-	}));
-    },
     componentDidMount() {
-	this.belegungsRequest = this.request("belegungen?semester=" + this.state.semester, "belegungen");
-	this.aemterRequest = this.request("aemter", "aemter");
-	this.semesterRequest = this.request("semester", "availableSemester");
+	this.aemterRequest = request("aemter", "aemter", this);
+	this.semesterRequest = request("semester", "availableSemester", this);
 	$("#semesterform").submit(e => {
 	    var semester = $("#semesterformval").val();
 	    this.setState({semester: semester});
-	    this.belegungsRequest = this.request("belegungen?semester=" + this.state.semester, "belegungen");
 	    e.preventDefault();
 	});
     },
     componentWillUnmount() {
 	this.aemterRequest.abort();
-	this.belegungsRequest.abort();
 	this.semesterRequest.abort();
     },
     render() {
@@ -129,14 +151,7 @@ export var Semesterauswahl = React.createClass({
 		</form>
 	      </nav>
 	      <Semester name={this.state.semester} belegungen={this.state.belegungen} aemter={this.state.aemter} />
-	      <InlineEdit
-		 validate={text => true}
-		activeClassName="editing"
-		text={this.state.semester}
-		paramName="semester"
-		change={data => {}}
-		/>
-	    </div>
+	      </div>
 	);
     }
 });
