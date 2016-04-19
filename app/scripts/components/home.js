@@ -37,18 +37,16 @@ var Amt = React.createClass({
     render () {
 	return (
 	    <tr>
-	      <td>
+	      <td style={{width: "20%"}}>
 		{this.props.amt.name}
 	      </td>
-	      <td>
-		{(() => {
-		    if (this.state.editing) {
-			return <Multiselect onBlur={this.stopEditing} defaultValue={this.state.persons.map(fullname)} data={this.props.persons.map(fullname)} />; 
-		    } else {
-			return <div onClick={this.beginEditing}>{this.state.persons.map(fullname).join(', ')}</div>;
-		    }
-		})()}
-	      </td>
+	      {(() => {
+		  if (this.state.editing) {
+		      return <td><Multiselect onBlur={this.stopEditing} defaultValue={this.state.persons.map(fullname)} data={this.props.persons.map(fullname)} /></td>; 
+		  } else {
+		      return <td onClick={this.beginEditing}>{this.state.persons.map(fullname).join(', ')}</td>;
+		  }
+	      })()}
 	    </tr>
 	);
     }
@@ -70,7 +68,7 @@ var Aemteraufstellung = props => {
   	  <h3>
 	    {props.title}
 	  </h3>
-	  <table className="table">
+	  <table className="table aemter-table">
 	    <tbody>
 	      {createBelegungen(props.aemter, props.persons, props.semester)}
 	    </tbody>
