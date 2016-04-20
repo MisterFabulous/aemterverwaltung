@@ -55,6 +55,7 @@ var EditablePersons = onClickOutside(React.createClass({
 	if (this.state.editing) {
 	    return <td>
 		<Multiselect
+	    ref={c => {if(c != null) c.focus();}}
 	    onBlur={this.stopEditing}
 	    onChange={persons => this.setState({persons})}
 	    defaultValue={this.state.persons}
