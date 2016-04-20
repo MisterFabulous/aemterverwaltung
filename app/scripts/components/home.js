@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Multiselect from 'react-widgets/lib/Multiselect';
+import onClickOutside from 'react-onclickoutside';
 
 import _ from 'underscore';
 import $ from 'jquery';
@@ -8,7 +9,7 @@ import $ from 'jquery';
 var capitalizeFirstLetter = (word) =>
     word.charAt(0).toUpperCase() + word.slice(1);
 
-var Amt = React.createClass({
+var EditablePersons = onClickOutside(React.createClass({
     getInitialState() {
 	return {
 	    editing: false,
@@ -45,30 +46,40 @@ var Amt = React.createClass({
 	    persons: this.state.persons.map(p => {return {firstname: p.firstname, lastname: p.lastname};})
 	});
     },
+    handleClickOutside(event) {
+	if (this.state.editing) {
+	    this.stopEditing(event);
+	}
+    },
     render () {
-	return (
-	    <tr>
-	      <td style={{width: "20%"}}>
-		{this.props.amt.name}
-	      </td>
-	      {(() => {
-		  if (this.state.editing) {
-		      return <td>
-			  <Multiselect onBlur={this.stopEditing}
-					   onChange={persons => this.setState({persons})}
-					   defaultValue={this.state.persons}
-					   data={this.props.persons}
-					   textField={fullname}
-					   groupBy={p => capitalizeFirstLetter(p.frat)} />
-			  </td>; 
-		  } else {
-		      return <td onClick={this.beginEditing}>{this.state.persons.map(fullname).join(', ')}</td>;
-		  }
-	      })()}
-	    </tr>
-	);
+	if (this.state.editing) {
+	    return <td>
+		<Multiselect
+	    onBlur={this.stopEditing}
+	    onChange={persons => this.setState({persons})}
+	    defaultValue={this.state.persons}
+	    data={this.props.persons}
+	    textField={fullname}
+	    groupBy={p => capitalizeFirstLetter(p.frat)} />
+		</td>;
+	} else {
+	    return <td onClick={this.beginEditing}>
+		{this.state.persons.map(fullname).join(', ')}
+	    </td>;
+	}
     }
-});
+}));
+
+var Amt = props => {
+    return (
+	<tr>
+	  <td style={{width: "20%"}}>
+	    {props.amt.name}
+	  </td>
+	  <EditablePersons semester={props.semester} amt={props.amt} persons={props.persons} />
+	</tr>
+    );
+};
 
 var fullname = person =>
 	person.firstname + ' ' + person.lastname;
