@@ -84,11 +84,6 @@ var Amt = props => {
 
 var fullname = person =>
 	person.firstname + ' ' + person.lastname;
-var amtspersonen = (belegungen, amt) => {
-    let tmp = _.groupBy(belegungen, 'amt');
-    let list = _.has(tmp, amt) ? tmp[amt] : [];
-    return list.map(fullname).join(', ');
-};
 var createBelegungen = (aemter, persons, semester) =>
 	aemter.map(amt => <Amt amt={amt} persons={persons} semester={semester} />);
 
