@@ -38,6 +38,12 @@ var Amt = React.createClass({
 	this.setState({
 	    editing: false
 	});
+	$.post(serverURL + "update_belegungen", {
+	    semester: this.props.semester,
+	    amt: this.props.amt.name,
+	    frat: this.props.amt.frat,
+	    persons: this.state.persons.map(p => {return {firstname: p.firstname, lastname: p.lastname};})
+	});
     },
     render () {
 	return (

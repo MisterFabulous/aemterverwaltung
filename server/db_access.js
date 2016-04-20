@@ -18,6 +18,36 @@ exports.get = (table) => (request, response) => {
     });
 };
 
+exports.updateBelegungen = (request, response) => {
+    MongoClient.connect(url, (err, db) => {
+	assert.equal(null, err);
+	console.log("Start updating 'belegungen'");
+	try {
+	    db.collection('belegungen')
+		.remove({
+		    semester: request.body.semester,
+		    amt: request.body.amt,
+		    frat: request.body.frat,
+		    $isolated: true
+		});
+	    console.log(JSON.stringify(request.body));
+	    if(request.body.persons) {
+		db.collection('belegungen')
+		    .insertMany(request.body.persons.map(p => { return {
+			firstname: p.firstname,
+			lastname: p.lastname,
+			amt: request.body.amt,
+			frat: request.body.frat,
+			semester: request.body.semester
+		    };}));
+	    }
+	} catch (e) {
+	    console.log(e);
+	    response.json(e);
+	}
+    });
+};
+
 exports.availableSemesters = (request, response) => {
     MongoClient.connect(url, (err, db) => {
 	assert.equal(null, err);
