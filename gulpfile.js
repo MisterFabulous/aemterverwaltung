@@ -72,7 +72,11 @@ gulp.task('images', function() {
 });
 
 gulp.task('fonts', function() {
-    return gulp.src(['app/fonts/**/*', 'app/bower_components/bootstrap-sass-official/assets/fonts/**/*'])
+    return gulp.src([
+	'app/fonts/**/*',
+	'app/bower_components/bootstrap-sass-official/assets/fonts/**/*',
+	'app/bower_components/react-widgets/dist/fonts/**/*'
+    ])
 	.pipe(gulp.dest('dist/fonts'))
 	.pipe($.size());
 });

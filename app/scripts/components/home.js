@@ -1,10 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Multiselect from 'react-widgets/lib/Multiselect';
+import ReactWidgets from 'react-widgets';
+var Multiselect = ReactWidgets.Multiselect;
+var NumberPicker = ReactWidgets.NumberPicker;
 import onClickOutside from 'react-onclickoutside';
 
 import _ from 'underscore';
 import $ from 'jquery';
+
+import Globalize from 'globalize';
+import globalizeLocalizer from 'react-widgets/lib/localizers/globalize';
+
+Globalize.load(require('cldr-data/supplemental/likelySubtags.json'));
+Globalize.load(require('cldr-data/main/de/numbers.json'));
+Globalize.load(require('cldr-data/supplemental/numberingSystems.json'));
+Globalize.locale('de');
+
+globalizeLocalizer(Globalize);
 
 var capitalizeFirstLetter = (word) =>
     word.charAt(0).toUpperCase() + word.slice(1);
@@ -181,6 +193,7 @@ export var Semesterauswahl = React.createClass({
 		    <select defaultValue={this.state.semester} onChange={this.changeSemester}>
 		      {this.state.availableSemester.map(this.createSemesterOption)}
 		    </select>
+		    <NumberPicker />
 		  </div>
 		</form>
 	      </nav>
