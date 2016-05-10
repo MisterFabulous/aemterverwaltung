@@ -2,21 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactWidgets from 'react-widgets';
 var Multiselect = ReactWidgets.Multiselect;
-var NumberPicker = ReactWidgets.NumberPicker;
+import Fuelux from 'fuelux';
 import onClickOutside from 'react-onclickoutside';
 
 import _ from 'underscore';
 import $ from 'jquery';
-
-import Globalize from 'globalize';
-import globalizeLocalizer from 'react-widgets/lib/localizers/globalize';
-
-Globalize.load(require('cldr-data/supplemental/likelySubtags.json'));
-Globalize.load(require('cldr-data/main/de/numbers.json'));
-Globalize.load(require('cldr-data/supplemental/numberingSystems.json'));
-Globalize.locale('de');
-
-globalizeLocalizer(Globalize);
 
 var capitalizeFirstLetter = (word) =>
     word.charAt(0).toUpperCase() + word.slice(1);
@@ -163,42 +153,54 @@ export var Semesterauswahl = React.createClass({
 	return {
 	    aemter: [], // name, frat
 	    persons: [], // firstname, lastname, sex, frat
-	    semester: "SS16",
-	    availableSemester: []
+	    semester: "SS",
+	    year: new Date().getFullYear()
 	};
     },
     componentDidMount() {
 	this.aemterRequest = request("aemter", "aemter", this);
-	this.semesterRequest = request("semester", "availableSemester", this);
 	this.personsRequest = request("persons", "persons", this);
     },
     componentWillUnmount() {
 	this.aemterRequest.abort();
-	this.semesterRequest.abort();
 	this.personsRequest.abort();
     },
     createSemesterOption(semester) {
 	return <option value={semester}>{semester}</option>;
     },
     changeSemester(event) {
-	this.setState({semester: event.target.value});
+	this.setState({
+	    semester: event.target.elements[0].value,
+	    year: event.target.elements[1].value
+	});
 	event.preventDefault();
     },
     render() {
 	return (
 	    <div>
 	      <nav className="navbar navbar-default">
-		<form className="navbar-form navbar-left" role="search">
-		  <div className="form-group">
-		    <select defaultValue={this.state.semester} onChange={this.changeSemester}>
-		      {this.state.availableSemester.map(this.createSemesterOption)}
-		    </select>
-		    <NumberPicker />
+		<div className="container-fluid">
+		  <div className="navbar-header">
+		    <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		      <span className="sr-only">Toggle navigation</span>
+		    </button>
+		    <a className="navbar-brand" href="#">Gipsburg-Aemterverwaltung</a>
 		  </div>
-		</form>
+		  <div className="collapse navbar-collapse">
+		    <form className="navbar-form navbar-left" role="search" onSubmit={this.changeSemester}>
+		      <div className="form-group">
+			<select className="form-control" defaultValue={this.state.semester}>
+			  {["WS", "SS"].map(this.createSemesterOption)}
+			</select>
+			<input type="number" min="1905" defaultValue={this.state.year} className="form-control" data-initialize="spinbox" />
+		      </div>
+		      <button type="submit" className="btn btn-default">Switch semester</button>
+		    </form>
+		  </div>
+		</div>
 	      </nav>
-	      <Semester name={this.state.semester} persons={this.state.persons} aemter={this.state.aemter} />
-	      </div>
+	      <Semester name={this.state.semester + this.state.year} persons={this.state.persons} aemter={this.state.aemter} />
+	    </div>
 	);
     }
 });
