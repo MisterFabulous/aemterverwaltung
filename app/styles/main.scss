@@ -1,5 +1,7 @@
 $icon-font-path: "/fonts/bootstrap/";
 @import "bootstrap-sass-official/assets/stylesheets/bootstrap";
+@import "react-widgets/dist/css/react-widgets";
+@import "fuelux/dist/css/fuelux.min";
 
 $aln-blue: #8092DE;
 $aln-silver: #939496;
