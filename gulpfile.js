@@ -4,6 +4,7 @@ var gulp       = require('gulp');
 var $          = require('gulp-load-plugins')();
 var sync       = $.sync(gulp).sync;
 var sass       = require('gulp-sass');
+var exec       = require('child_process').exec;
 var del        = require('del');
 var browserify = require('browserify');
 var watchify   = require('watchify');
@@ -89,11 +90,14 @@ gulp.task('extras', function () {
 });
 
 gulp.task('serve', function() {
-    gulp.src('dist')
-	.pipe($.webserver({
-	    livereload: true,
-	    port: 9000
-	}));
+    exec('mongod --dbpath=/data --port 27017', function (err, stdout, stderr) {
+	console.log(stdout);
+	console.log(stderr);
+    });
+    exec('node server/app.js', function (err, stdout, stderr) {
+	console.log(stdout);
+	console.log(stderr);
+    });
 });
 
 gulp.task('jest', function () {

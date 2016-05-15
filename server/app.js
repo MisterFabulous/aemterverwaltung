@@ -10,7 +10,7 @@ var db = require('./db_access');
 var _ = require('underscore');
 
 app
-    .use(express.static('../dist'))
+    .use(express.static('dist'))
     .use(bodyParser.json())
     .use(bodyParser.urlencoded({extended: true}))
     .get('/persons', db.get('persons'))
