@@ -2,11 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactWidgets from 'react-widgets';
 var Multiselect = ReactWidgets.Multiselect;
+
+import $ from 'jquery';
+import _ from 'underscore';
+
 import Fuelux from 'fuelux';
 import onClickOutside from 'react-onclickoutside';
 
-import _ from 'underscore';
-import $ from 'jquery';
 
 var capitalizeFirstLetter = (word) =>
     word.charAt(0).toUpperCase() + word.slice(1);
@@ -148,6 +150,81 @@ var request = (query, state, component) =>
 	    });
 	}));
 
+var createOption = name => <option value={name}>{name}</option>;
+
+var AddPersonForm = React.createClass({
+    addPerson(event) {
+	$.post(serverURL + "add_person", {
+	    firstname: event.target.elements[0].value,
+	    lastname: event.target.elements[1].value,
+	    frat: event.target.elements[2].value,
+	    sex: event.target.elements[3].value
+	});
+	this.props.onPersonAdded();
+	event.preventDefault();
+    },
+    render() {
+	return (
+	    <form className="form-horizontal" role="form" onSubmit={this.addPerson}>
+	      <div className="form-group">
+		<label className="control-label col-sm-4" for="addperson-firstname">Firstname</label>
+		<div className="col-sm-8">
+		  <input type="text" className="form-control" id="addperson-firstname" />
+		</div>
+	      </div>
+	      <div className="form-group">
+		<label className="control-label col-sm-4" for="addperson-lastname">Lastname</label>
+		<div className="col-sm-8">
+		  <input type="text" className="form-control" id="addperson-lastname" />
+		</div>
+	      </div>
+	      <div className="form-group">
+		<label className="control-label col-sm-4" for="addperson-frat">Frat</label>
+		<div className="col-sm-8">
+		  <select className="form-control" id="addperson-frat" defaultValue="alania">
+		    {["alania", "laetitia", "haus"].map(createOption)}
+		  </select>
+		</div>
+	      </div>
+	      <div className="form-group">
+		<label className="control-label col-sm-4" for="addperson-sex">Sex</label>
+		<div className="col-sm-8">
+		  <select name="sex" className="form-control" id="addperson-sex" defaultValue="male">
+		    {["male", "female"].map(createOption)}
+		  </select>
+		</div>
+	      </div>
+	      <div className="form-group">
+		<div className="col-sm-offset-4 col-sm-8">
+		  <button type="submit" className="btn btn-default">Add person</button>
+		</div>
+	      </div>
+	    </form>
+	);
+    }
+});
+
+var SemesterSwitcher = React.createClass({
+    delegateSubmit(event) {
+	this.props.onSwitch(event.target.elements[0].value,
+			    event.target.elements[1].value);
+	event.preventDefault();
+    },
+    render() {
+	return (
+	    <form className="navbar-form navbar-left" onSubmit={this.delegateSubmit}>
+	      <div className="form-group">
+		<select className="form-control" defaultValue={this.props.defaultSemester}>
+		  {["WS", "SS"].map(createOption)}
+		</select>
+		<input type="number" min="1905" defaultValue={this.props.defaultYear} className="form-control" data-initialize="spinbox" />
+	      </div>
+	      <button type="submit" className="btn btn-default">Switch semester</button>
+	    </form>
+	);
+    }
+});
+
 export var Semesterauswahl = React.createClass({
     getInitialState() {
 	return {
@@ -165,15 +242,8 @@ export var Semesterauswahl = React.createClass({
 	this.aemterRequest.abort();
 	this.personsRequest.abort();
     },
-    createSemesterOption(semester) {
-	return <option value={semester}>{semester}</option>;
-    },
-    changeSemester(event) {
-	this.setState({
-	    semester: event.target.elements[0].value,
-	    year: event.target.elements[1].value
-	});
-	event.preventDefault();
+    changeSemester(semester, year) {
+	this.setState({semester, year});
     },
     render() {
 	return (
@@ -187,15 +257,17 @@ export var Semesterauswahl = React.createClass({
 		    <a className="navbar-brand" href="#">Gipsburg-Aemterverwaltung</a>
 		  </div>
 		  <div className="collapse navbar-collapse">
-		    <form className="navbar-form navbar-left" role="search" onSubmit={this.changeSemester}>
-		      <div className="form-group">
-			<select className="form-control" defaultValue={this.state.semester}>
-			  {["WS", "SS"].map(this.createSemesterOption)}
-			</select>
-			<input type="number" min="1905" defaultValue={this.state.year} className="form-control" data-initialize="spinbox" />
-		      </div>
-		      <button type="submit" className="btn btn-default">Switch semester</button>
-		    </form>
+		    <SemesterSwitcher onSwitch={this.changeSemester} defaultSemester={this.state.semester} defaultYear={this.state.year} />
+		    <ul className="nav pull-right">
+		      <li className="dropdown">
+			<a className="dropdown-toggle btn btn-default" href="#" data-toggle="dropdown" role="button">
+			  Add person <strong className="caret"></strong>
+			</a>
+			<div className="dropdown-menu dropdown-menu-right big-dropdown-menu">
+			  <AddPersonForm onPersonAdded={this.forceUpdate} />
+			</div>
+		      </li>
+		    </ul>
 		  </div>
 		</div>
 	      </nav>

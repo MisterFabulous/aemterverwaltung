@@ -48,6 +48,20 @@ exports.updateBelegungen = (request, response) => {
     });
 };
 
+exports.addPerson = (request, response) => {
+    MongoClient.connect(url, (err, db) => {
+	assert.equal(null, err);
+	console.log("Start adding 'person'");
+	db.collection('persons')
+	    .insert({
+		firstname: request.body.firstname,
+		lastname: request.body.lastname,
+		frat: request.body.frat,
+		sex: request.body.sex
+	    });
+    });
+};
+
 exports.availableSemesters = (request, response) => {
     MongoClient.connect(url, (err, db) => {
 	assert.equal(null, err);

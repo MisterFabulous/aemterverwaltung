@@ -18,6 +18,7 @@ app
     .get('/aemter', db.get('aemter'))
     .get('/semester', db.availableSemesters)
     .post('/update_belegungen', db.updateBelegungen)
+    .post('/add_person', db.addPerson)
     .listen(3000, () => {
 	console.log('Server running at http://127.0.0.1:3000/');
     });
