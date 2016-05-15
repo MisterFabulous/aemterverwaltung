@@ -109,7 +109,7 @@ var Aemteraufstellung = props => {
 var frats = ["alania", "laetitia", "haus"];
 var sexs = ["male", "female"];
 var semesters = ["WS", "SS"];
-var vorstand = ['X', 'XX', 'XXX', 'VX', 'FM'];
+var vorstand = ['X', 'FM', 'VX', 'XX', 'XXX'];
 
 var isVorstand = amt => _.contains(vorstand, amt);
 
