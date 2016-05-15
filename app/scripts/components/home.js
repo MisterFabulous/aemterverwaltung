@@ -23,8 +23,8 @@ var EditablePersons = onClickOutside(React.createClass({
     requestPersons(props) {
 	this.personsRequest = request("belegungen" +
 				      "?semester=" + props.semester +
-				      "&amt=" + props.amt.name +
-				      "&frat=" + props.amt.frat,
+				      "&amt=" + props.amt +
+				      "&frat=" + props.frat,
 				      "persons", this);
     },
     componentDidMount() {
@@ -45,8 +45,8 @@ var EditablePersons = onClickOutside(React.createClass({
 	});
 	$.post(serverURL + "update_belegungen", {
 	    semester: this.props.semester,
-	    amt: this.props.amt.name,
-	    frat: this.props.amt.frat,
+	    amt: this.props.amt,
+	    frat: this.props.frat,
 	    persons: this.state.persons.map(p => {return {firstname: p.firstname, lastname: p.lastname};})
 	});
     },
@@ -79,17 +79,17 @@ var Amt = props => {
     return (
 	<tr>
 	  <td style={{width: "20%"}}>
-	    {props.amt.name}
+	    {props.amt}
 	  </td>
-	  <EditablePersons semester={props.semester} amt={props.amt} persons={props.persons} />
+	  <EditablePersons semester={props.semester} amt={props.amt} persons={props.persons} frat={props.frat} />
 	</tr>
     );
 };
 
 var fullname = person =>
 	person.firstname + ' ' + person.lastname;
-var createBelegungen = (aemter, persons, semester) =>
-	aemter.map(amt => <Amt amt={amt} persons={persons} semester={semester} />);
+var createBelegungen = (aemter, persons, semester, frat) =>
+	aemter.map(amt => <Amt amt={amt} persons={persons} semester={semester} frat={frat} />);
 
 var Aemteraufstellung = props => {
     return (
@@ -99,7 +99,7 @@ var Aemteraufstellung = props => {
 	  </h3>
 	  <table className="table aemter-table">
 	    <tbody>
-	      {createBelegungen(props.aemter, props.persons, props.semester)}
+	      {createBelegungen(props.aemter, props.persons, props.semester, props.frat)}
 	    </tbody>
 	  </table>
 	</div>
@@ -109,8 +109,9 @@ var Aemteraufstellung = props => {
 var frats = ["alania", "laetitia", "haus"];
 var sexs = ["male", "female"];
 var semesters = ["WS", "SS"];
+var vorstand = ['X', 'XX', 'XXX', 'VX', 'FM'];
 
-var isVorstand = amt => _.contains(['X', 'XX', 'XXX', 'VX', 'FM'], amt);
+var isVorstand = amt => _.contains(vorstand, amt);
 
 var Semester = props => {
     return (
@@ -119,29 +120,29 @@ var Semester = props => {
 	    <div className="col-sm-6">
 	      <Aemteraufstellung title="Alanenvorstand" frat="alania" semester={props.name}
 				 persons={props.persons.filter(p => p.frat == 'alania')}
-				 aemter={props.aemter.filter(a => a.frat == 'alania' && isVorstand(a.name))} />
+				 aemter={vorstand} />
 	    </div>
 	    <div className="col-sm-6">
 	      <Aemteraufstellung title="Laetizenvorstand" frat="laetitia" semester={props.name}
 				 persons={props.persons.filter(p => p.frat == 'laetitia')}
-				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && isVorstand(a.name))} />
+				 aemter={vorstand} />
 	    </div>
 	  </div>
 	  <div className="row">
 	    <div className="col-sm-6">
 	      <Aemteraufstellung title="Alanenämter" frat="alania" semester={props.name}
 				 persons={props.persons.filter(p => _.contains(['alania', 'haus'], p.frat))}
-				 aemter={props.aemter.filter(a => a.frat == 'alania' && !isVorstand(a.name))} />
+		aemter={props.aemter.filter(a => a.frat == 'alania' && !isVorstand(a.name)).map(a => a.name)} />
 	    </div>
 	    <div className="col-sm-6">
 	      <Aemteraufstellung title="Laetizenämter" frat="laetitia" semester={props.name}
 				 persons={props.persons.filter(p => _.contains(['laetitia', 'haus'], p.frat))}
-				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && !isVorstand(a.name))} />
+				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && !isVorstand(a.name)).map(a => a.name)} />
 	    </div>
 	  </div>
 	  <Aemteraufstellung title="Hausämter" frat="haus" semester={props.name}
 			     persons={props.persons}
-			     aemter={props.aemter.filter(a => a.frat == 'haus')} />
+			     aemter={props.aemter.filter(a => a.frat == 'haus').map(a => a.name)} />
 	</div>
     );
 };
