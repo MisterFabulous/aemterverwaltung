@@ -106,6 +106,10 @@ var Aemteraufstellung = props => {
     );
 };
 
+var frats = ["alania", "laetitia", "haus"];
+var sexs = ["male", "female"];
+var semesters = ["WS", "SS"];
+
 var isVorstand = amt => _.contains(['X', 'XX', 'XXX', 'VX', 'FM'], amt);
 
 var Semester = props => {
@@ -167,36 +171,36 @@ var AddPersonForm = React.createClass({
 	return (
 	    <form className="form-horizontal" role="form" onSubmit={this.addPerson}>
 	      <div className="form-group">
-		<label className="control-label col-sm-4" for="addperson-firstname">Firstname</label>
+		<label className="control-label col-sm-4 add-person-label" for="addperson-firstname">Vorname</label>
 		<div className="col-sm-8">
 		  <input type="text" className="form-control" id="addperson-firstname" />
 		</div>
 	      </div>
 	      <div className="form-group">
-		<label className="control-label col-sm-4" for="addperson-lastname">Lastname</label>
+		<label className="control-label col-sm-4 add-person-label" for="addperson-lastname">Nachname</label>
 		<div className="col-sm-8">
 		  <input type="text" className="form-control" id="addperson-lastname" />
 		</div>
 	      </div>
 	      <div className="form-group">
-		<label className="control-label col-sm-4" for="addperson-frat">Frat</label>
+		<label className="control-label col-sm-4 add-person-label" for="addperson-frat">Zugehörigkeit</label>
 		<div className="col-sm-8">
 		  <select className="form-control" id="addperson-frat" defaultValue="alania">
-		    {["alania", "laetitia", "haus"].map(createOption)}
+		    {frats.map(createOption)}
 		  </select>
 		</div>
 	      </div>
 	      <div className="form-group">
-		<label className="control-label col-sm-4" for="addperson-sex">Sex</label>
+		<label className="control-label col-sm-4 add-person-label" for="addperson-sex">Geschlecht</label>
 		<div className="col-sm-8">
 		  <select name="sex" className="form-control" id="addperson-sex" defaultValue="male">
-		    {["male", "female"].map(createOption)}
+		    {sexs.map(createOption)}
 		  </select>
 		</div>
 	      </div>
 	      <div className="form-group">
 		<div className="col-sm-offset-4 col-sm-8">
-		  <button type="submit" className="btn btn-default">Add person</button>
+		  <button type="submit" className="btn btn-default">Person hinzufügen</button>
 		</div>
 	      </div>
 	    </form>
@@ -215,11 +219,11 @@ var SemesterSwitcher = React.createClass({
 	    <form className="navbar-form navbar-left" onSubmit={this.delegateSubmit}>
 	      <div className="form-group">
 		<select className="form-control" defaultValue={this.props.defaultSemester}>
-		  {["WS", "SS"].map(createOption)}
+		  {semesters.map(createOption)}
 		</select>
 		<input type="number" min="1905" defaultValue={this.props.defaultYear} className="form-control" data-initialize="spinbox" />
 	      </div>
-	      <button type="submit" className="btn btn-default">Switch semester</button>
+	      <button type="submit" className="btn btn-default">Semester wechseln</button>
 	    </form>
 	);
     }
@@ -261,7 +265,7 @@ export var Semesterauswahl = React.createClass({
 		    <ul className="nav pull-right">
 		      <li className="dropdown">
 			<a className="dropdown-toggle btn btn-default" href="#" data-toggle="dropdown" role="button">
-			  Add person <strong className="caret"></strong>
+			  Person hinzufügen <strong className="caret"></strong>
 			</a>
 			<div className="dropdown-menu dropdown-menu-right big-dropdown-menu">
 			  <AddPersonForm onPersonAdded={this.forceUpdate} />
