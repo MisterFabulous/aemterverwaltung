@@ -1,0 +1,19 @@
+Steps for setup:
+
+1. Get the latest node version
+2. Get the latest npm version
+
+You maybe want to use a version manager like 'n' or 'nvm' for that.
+
+3. Get the latest mongodb version
+4. Install some packages with npm globally:
+  a) npm install -g bower gulp node-gyp
+5. Run `npm install`
+  a) In case of a contextify-error, you maybe need to install g++-multilib on your system
+6. Run `bower install`
+7. Setup configuration file:
+  a) cp config.tmpl.js config.js
+  b) Edit config.js to fit your needs
+8. Run `gulp`
+9. Run `gulp serve`
+10. Open a browser and open your url

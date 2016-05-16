@@ -9,6 +9,7 @@ import _ from 'underscore';
 import Fuelux from 'fuelux';
 import onClickOutside from 'react-onclickoutside';
 
+import config from '../../../config';
 
 var capitalizeFirstLetter = (word) =>
     word.charAt(0).toUpperCase() + word.slice(1);
@@ -43,7 +44,7 @@ var EditablePersons = onClickOutside(React.createClass({
 	this.setState({
 	    editing: false
 	});
-	$.post(serverURL + "update_belegungen", {
+	$.post(config().serverURL + "update_belegungen", {
 	    semester: this.props.semester,
 	    amt: this.props.amt,
 	    frat: this.props.frat,
@@ -147,9 +148,8 @@ var Semester = props => {
     );
 };
 
-var serverURL = "http://localhost:3000/";
 var request = (query, state, component) =>
-	$.get(serverURL + query, (result => {
+	$.get(config().serverURL + query, (result => {
 	    component.setState({
 		[state]: result
 	    });
@@ -159,7 +159,7 @@ var createOption = name => <option value={name}>{name}</option>;
 
 var AddPersonForm = React.createClass({
     addPerson(event) {
-	$.post(serverURL + "add_person", {
+	$.post(config().serverURL + "add_person", {
 	    firstname: event.target.elements[0].value,
 	    lastname: event.target.elements[1].value,
 	    frat: event.target.elements[2].value,
