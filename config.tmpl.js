@@ -1,5 +1,7 @@
-export default function() {
+module.exports = function() {
     return {
-	serverURL: "http://localhost:3000/"
+	host: "localhost",
+	port: 3000,
+	mongo: 'mongodb://localhost:27017/aemter'
     };
 };

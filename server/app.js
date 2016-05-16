@@ -9,6 +9,8 @@ var db = require('./db_access');
 
 var _ = require('underscore');
 
+var config = require('../config');
+
 app
     .use(express.static('dist'))
     .use(bodyParser.json())
@@ -19,6 +21,6 @@ app
     .get('/semester', db.availableSemesters)
     .post('/update_belegungen', db.updateBelegungen)
     .post('/add_person', db.addPerson)
-    .listen(3000, () => {
-	console.log('Server running at http://127.0.0.1:3000/');
+    .listen(config().port, () => {
+	console.log('Server running at http://' + config().host + ':' + config().port + '/');
     });
