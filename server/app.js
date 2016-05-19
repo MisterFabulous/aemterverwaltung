@@ -12,15 +12,14 @@ var _ = require('underscore');
 var config = require('../config');
 
 app
-    .use(express.static('dist'))
     .use(bodyParser.json())
     .use(bodyParser.urlencoded({extended: true}))
-    .get('/persons', db.get('persons'))
-    .get('/belegungen', db.get('belegungen'))
-    .get('/aemter', db.get('aemter'))
-    .get('/semester', db.availableSemesters)
-    .post('/update_belegungen', db.updateBelegungen)
-    .post('/add_person', db.addPerson)
+    .get('/services/persons', db.get('persons'))
+    .get('/services/belegungen', db.get('belegungen'))
+    .get('/services/aemter', db.get('aemter'))
+    .get('/services/semester', db.availableSemesters)
+    .post('/services/update_belegungen', db.updateBelegungen)
+    .post('/services/add_person', db.addPerson)
     .listen(config().port, () => {
 	console.log('Server running at http://' + config().host + ':' + config().port + '/');
     });
