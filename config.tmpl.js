@@ -13,10 +13,15 @@ module.exports = function() {
 	    title: 'Job administration',
 	    switch_semester: 'Switch semester',
 	    add_person: 'Add person',
-	    managements: ['Management of organization 1', 'Management of organization 2'],
-	    variings: ['Dynamic jobs of organization 1', 'Dynamic jobs of organization 2'],
+	    managements: {
+		'alania': 'Management of organization 1',
+		'laetitia': 'Management of organization 2'
+	    },
+	    variings: {
+		'alania': 'Dynamic jobs of organization 1',
+		'laetitia': 'Dynamic jobs of organization 2'
+	    },
 	    common: 'Common jobs'
 	}
-
     };
 };
