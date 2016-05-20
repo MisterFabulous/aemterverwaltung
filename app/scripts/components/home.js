@@ -27,7 +27,7 @@ var EditablePersons = onClickOutside(React.createClass({
 	this.personsRequest = request("belegungen" +
 				      "?semester=" + props.semester +
 				      "&amt=" + props.amt +
-				      "&frat=" + props.frat,
+				      "&org=" + props.org,
 				      "persons", this);
     },
     componentDidMount() {
@@ -49,7 +49,7 @@ var EditablePersons = onClickOutside(React.createClass({
 	$.post(serverURL + "update_belegungen", {
 	    semester: this.props.semester,
 	    amt: this.props.amt,
-	    frat: this.props.frat,
+	    org: this.props.org,
 	    persons: this.state.persons.map(p => {return {firstname: p.firstname, lastname: p.lastname};})
 	});
     },
@@ -68,7 +68,7 @@ var EditablePersons = onClickOutside(React.createClass({
 	    defaultValue={this.state.persons}
 	    data={this.props.persons}
 	    textField={fullname}
-	    groupBy={p => capitalizeFirstLetter(p.frat)} />
+	    groupBy={p => capitalizeFirstLetter(p.org)} />
 		</td>;
 	} else {
 	    return <td onClick={this.beginEditing}>
@@ -84,25 +84,25 @@ var Amt = props => {
 	  <td style={{width: "20%"}}>
 	    {props.amt}
 	  </td>
-	  <EditablePersons semester={props.semester} amt={props.amt} persons={props.persons} frat={props.frat} />
+	  <EditablePersons semester={props.semester} amt={props.amt} persons={props.persons} org={props.org} />
 	</tr>
     );
 };
 
 var fullname = person =>
 	person.firstname + ' ' + person.lastname;
-var createBelegungen = (aemter, persons, semester, frat) =>
-	aemter.map(amt => <Amt amt={amt} persons={persons} semester={semester} frat={frat} />);
+var createBelegungen = (aemter, persons, semester, org) =>
+	aemter.map(amt => <Amt amt={amt} persons={persons} semester={semester} org={org} />);
 
 var Aemteraufstellung = props => {
     return (
-	<div className={props.frat + ' well'}>
+	<div className={props.org + ' well'}>
   	  <h3>
 	    {props.title}
 	  </h3>
 	  <table className="table aemter-table">
 	    <tbody>
-	      {createBelegungen(props.aemter, props.persons, props.semester, props.frat)}
+	      {createBelegungen(props.aemter, props.persons, props.semester, props.org)}
 	    </tbody>
 	  </table>
 	</div>
@@ -116,31 +116,31 @@ var Semester = props => {
 	<div className="semester">
 	  <div className="row">
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title={config().names.managements[0]} frat="alania" semester={props.name}
-				 persons={props.persons.filter(p => p.frat == 'alania')}
+	      <Aemteraufstellung title={config().names.managements[0]} org="alania" semester={props.name}
+				 persons={props.persons.filter(p => p.org == 'alania')}
 				 aemter={config().names.vorstand} />
 	    </div>
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title={config().names.managements[1]} frat="laetitia" semester={props.name}
-				 persons={props.persons.filter(p => p.frat == 'laetitia')}
+	      <Aemteraufstellung title={config().names.managements[1]} org="laetitia" semester={props.name}
+				 persons={props.persons.filter(p => p.org == 'laetitia')}
 				 aemter={config().names.vorstand} />
 	    </div>
 	  </div>
 	  <div className="row">
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title={config().names.variings[0]} frat="alania" semester={props.name}
-				 persons={props.persons.filter(p => _.contains(['alania', 'haus'], p.frat))}
-		aemter={props.aemter.filter(a => a.frat == 'alania' && !isVorstand(a.name)).map(a => a.name)} />
+	      <Aemteraufstellung title={config().names.variings[0]} org="alania" semester={props.name}
+				 persons={props.persons.filter(p => _.contains(['alania', 'haus'], p.org))}
+		aemter={props.aemter.filter(a => a.org == 'alania' && !isVorstand(a.name)).map(a => a.name)} />
 	    </div>
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title={config().names.variings[1]} frat="laetitia" semester={props.name}
-				 persons={props.persons.filter(p => _.contains(['laetitia', 'haus'], p.frat))}
-				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && !isVorstand(a.name)).map(a => a.name)} />
+	      <Aemteraufstellung title={config().names.variings[1]} org="laetitia" semester={props.name}
+				 persons={props.persons.filter(p => _.contains(['laetitia', 'haus'], p.org))}
+				 aemter={props.aemter.filter(a => a.org == 'laetitia' && !isVorstand(a.name)).map(a => a.name)} />
 	    </div>
 	  </div>
-	  <Aemteraufstellung title={config().names.common} frat="haus" semester={props.name}
+	  <Aemteraufstellung title={config().names.common} org="haus" semester={props.name}
 			     persons={props.persons}
-			     aemter={props.aemter.filter(a => a.frat == 'haus').map(a => a.name)} />
+			     aemter={props.aemter.filter(a => a.org == 'haus').map(a => a.name)} />
 	</div>
     );
 };
@@ -159,7 +159,7 @@ var AddPersonForm = React.createClass({
 	$.post(serverURL + "add_person", {
 	    firstname: event.target.elements[0].value,
 	    lastname: event.target.elements[1].value,
-	    frat: event.target.elements[2].value,
+	    org: event.target.elements[2].value,
 	    sex: event.target.elements[3].value
 	});
 	this.props.onPersonAdded();
@@ -181,10 +181,10 @@ var AddPersonForm = React.createClass({
 		</div>
 	      </div>
 	      <div className="form-group">
-		<label className="control-label col-sm-4 add-person-label" for="addperson-frat">Zugehörigkeit</label>
+		<label className="control-label col-sm-4 add-person-label" for="addperson-org">Zugehörigkeit</label>
 		<div className="col-sm-8">
-		  <select className="form-control" id="addperson-frat" defaultValue="alania">
-		    {config().names.frats.map(createOption)}
+		  <select className="form-control" id="addperson-org" defaultValue="alania">
+		    {config().names.orgs.map(createOption)}
 		  </select>
 		</div>
 	      </div>
@@ -230,8 +230,8 @@ var SemesterSwitcher = React.createClass({
 export var Semesterauswahl = React.createClass({
     getInitialState() {
 	return {
-	    aemter: [], // name, frat
-	    persons: [], // firstname, lastname, sex, frat
+	    aemter: [], // name, org
+	    persons: [], // firstname, lastname, sex, org
 	    semester: config().names.semesters[0],
 	    year: new Date().getFullYear()
 	};

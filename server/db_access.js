@@ -26,7 +26,7 @@ exports.updateBelegungen = (request, response) => {
 		.remove({
 		    semester: request.body.semester,
 		    amt: request.body.amt,
-		    frat: request.body.frat,
+		    org: request.body.org,
 		    $isolated: true
 		});
 	    console.log(JSON.stringify(request.body));
@@ -36,7 +36,7 @@ exports.updateBelegungen = (request, response) => {
 			firstname: p.firstname,
 			lastname: p.lastname,
 			amt: request.body.amt,
-			frat: request.body.frat,
+			org: request.body.org,
 			semester: request.body.semester
 		    };}));
 	    }
@@ -55,7 +55,7 @@ exports.addPerson = (request, response) => {
 	    .insert({
 		firstname: request.body.firstname,
 		lastname: request.body.lastname,
-		frat: request.body.frat,
+		org: request.body.org,
 		sex: request.body.sex
 	    });
     });
