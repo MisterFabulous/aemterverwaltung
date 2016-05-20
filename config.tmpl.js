@@ -6,7 +6,7 @@ module.exports = function() {
 	    mongo: 'mongodb://localhost:27017/aemter'
 	},
 	names: {
-	    orgs: ['alania', 'laetitia', 'haus'],
+	    orgs: ['alania', 'laetitia'],
 	    sexs: ['male', 'female'],
 	    semesters: ['First half', 'Second half'],
 	    vorstand: ['President', 'Vice-President', 'Secretary', 'Treasurer', 'Spokesman'],

@@ -111,36 +111,42 @@ var Aemteraufstellung = props => {
 
 var isVorstand = amt => _.contains(config().names.vorstand, amt);
 
+var createManagementColumn = (org, persons, semester) => {
+    return (
+	<div className="col-sm-6">
+	  <Aemteraufstellung title={config().names.managements[org]} org={org} semester={semester} persons={persons} aemter={config().names.vorstand} />
+	</div>
+    );
+};
+
+var createDynamicJobsColumn = (org, persons, semester, aemter) => {
+    return (
+	<div className="col-sm-6">
+	  <Aemteraufstellung title={config().names.variings[org]} org={org} semester={semester} persons={persons}
+	    aemter={aemter.filter(a => a.org == org && !isVorstand(a.name)).map(a => a.name)} />
+	</div>
+    );
+};
+
 var Semester = props => {
+    if (config().names.orgs.length != 2) {
+	throw "Currently only two organizations are supported";
+    }
     return (
 	<div className="semester">
 	  <div className="row">
-	    <div className="col-sm-6">
-	      <Aemteraufstellung title={config().names.managements[0]} org="alania" semester={props.name}
-				 persons={props.persons.filter(p => p.org == 'alania')}
-				 aemter={config().names.vorstand} />
-	    </div>
-	    <div className="col-sm-6">
-	      <Aemteraufstellung title={config().names.managements[1]} org="laetitia" semester={props.name}
-				 persons={props.persons.filter(p => p.org == 'laetitia')}
-				 aemter={config().names.vorstand} />
-	    </div>
+	    {config().names.orgs.map(org => createManagementColumn(org, props.persons.filter(p => p.org == org), props.name))}
 	  </div>
 	  <div className="row">
-	    <div className="col-sm-6">
-	      <Aemteraufstellung title={config().names.variings[0]} org="alania" semester={props.name}
-				 persons={props.persons.filter(p => _.contains(['alania', 'haus'], p.org))}
-		aemter={props.aemter.filter(a => a.org == 'alania' && !isVorstand(a.name)).map(a => a.name)} />
-	    </div>
-	    <div className="col-sm-6">
-	      <Aemteraufstellung title={config().names.variings[1]} org="laetitia" semester={props.name}
-				 persons={props.persons.filter(p => _.contains(['laetitia', 'haus'], p.org))}
-				 aemter={props.aemter.filter(a => a.org == 'laetitia' && !isVorstand(a.name)).map(a => a.name)} />
-	    </div>
+	    {config().names.orgs.map(org => createDynamicJobsColumn(org,
+								    props.persons.filter(p => _.contains([org, 'common'], p.org)),
+								    props.name,
+								    props.aemter))
+	    }
 	  </div>
-	  <Aemteraufstellung title={config().names.common} org="haus" semester={props.name}
+	  <Aemteraufstellung title={config().names.common} org="common" semester={props.name}
 			     persons={props.persons}
-			     aemter={props.aemter.filter(a => a.org == 'haus').map(a => a.name)} />
+			     aemter={props.aemter.filter(a => a.org == 'common').map(a => a.name)} />
 	</div>
     );
 };
