@@ -14,7 +14,7 @@ var config = require('../../../config');
 var capitalizeFirstLetter = (word) =>
     word.charAt(0).toUpperCase() + word.slice(1);
 
-var serverURL = 'http://' + config().host + '/services/';
+var serverURL = 'http://localhost/services/';
 
 var EditablePersons = onClickOutside(React.createClass({
     getInitialState() {
@@ -109,41 +109,36 @@ var Aemteraufstellung = props => {
     );
 };
 
-var frats = ["alania", "laetitia", "haus"];
-var sexs = ["male", "female"];
-var semesters = ["WS", "SS"];
-var vorstand = ['X', 'FM', 'VX', 'XX', 'XXX'];
-
-var isVorstand = amt => _.contains(vorstand, amt);
+var isVorstand = amt => _.contains(config().names.vorstand, amt);
 
 var Semester = props => {
     return (
 	<div className="semester">
 	  <div className="row">
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Alanenvorstand" frat="alania" semester={props.name}
+	      <Aemteraufstellung title={config().names.managements[0]} frat="alania" semester={props.name}
 				 persons={props.persons.filter(p => p.frat == 'alania')}
-				 aemter={vorstand} />
+				 aemter={config().names.vorstand} />
 	    </div>
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Laetizenvorstand" frat="laetitia" semester={props.name}
+	      <Aemteraufstellung title={config().names.managements[1]} frat="laetitia" semester={props.name}
 				 persons={props.persons.filter(p => p.frat == 'laetitia')}
-				 aemter={vorstand} />
+				 aemter={config().names.vorstand} />
 	    </div>
 	  </div>
 	  <div className="row">
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Alanenämter" frat="alania" semester={props.name}
+	      <Aemteraufstellung title={config().names.variings[0]} frat="alania" semester={props.name}
 				 persons={props.persons.filter(p => _.contains(['alania', 'haus'], p.frat))}
 		aemter={props.aemter.filter(a => a.frat == 'alania' && !isVorstand(a.name)).map(a => a.name)} />
 	    </div>
 	    <div className="col-sm-6">
-	      <Aemteraufstellung title="Laetizenämter" frat="laetitia" semester={props.name}
+	      <Aemteraufstellung title={config().names.variings[1]} frat="laetitia" semester={props.name}
 				 persons={props.persons.filter(p => _.contains(['laetitia', 'haus'], p.frat))}
 				 aemter={props.aemter.filter(a => a.frat == 'laetitia' && !isVorstand(a.name)).map(a => a.name)} />
 	    </div>
 	  </div>
-	  <Aemteraufstellung title="Hausämter" frat="haus" semester={props.name}
+	  <Aemteraufstellung title={config().names.common} frat="haus" semester={props.name}
 			     persons={props.persons}
 			     aemter={props.aemter.filter(a => a.frat == 'haus').map(a => a.name)} />
 	</div>
@@ -189,7 +184,7 @@ var AddPersonForm = React.createClass({
 		<label className="control-label col-sm-4 add-person-label" for="addperson-frat">Zugehörigkeit</label>
 		<div className="col-sm-8">
 		  <select className="form-control" id="addperson-frat" defaultValue="alania">
-		    {frats.map(createOption)}
+		    {config().names.frats.map(createOption)}
 		  </select>
 		</div>
 	      </div>
@@ -197,13 +192,13 @@ var AddPersonForm = React.createClass({
 		<label className="control-label col-sm-4 add-person-label" for="addperson-sex">Geschlecht</label>
 		<div className="col-sm-8">
 		  <select name="sex" className="form-control" id="addperson-sex" defaultValue="male">
-		    {sexs.map(createOption)}
+		    {config().names.sexs.map(createOption)}
 		  </select>
 		</div>
 	      </div>
 	      <div className="form-group">
 		<div className="col-sm-offset-4 col-sm-8">
-		  <button type="submit" className="btn btn-default">Person hinzufügen</button>
+		  <button type="submit" className="btn btn-default">{config().names.add_person}</button>
 		</div>
 	      </div>
 	    </form>
@@ -222,11 +217,11 @@ var SemesterSwitcher = React.createClass({
 	    <form className="navbar-form navbar-left" onSubmit={this.delegateSubmit}>
 	      <div className="form-group">
 		<select className="form-control" defaultValue={this.props.defaultSemester}>
-		  {semesters.map(createOption)}
+		  {config().names.semesters.map(createOption)}
 		</select>
 		<input type="number" min="1905" defaultValue={this.props.defaultYear} className="form-control" data-initialize="spinbox" />
 	      </div>
-	      <button type="submit" className="btn btn-default">Semester wechseln</button>
+	      <button type="submit" className="btn btn-default">{config().names.switch_semester}</button>
 	    </form>
 	);
     }
@@ -237,7 +232,7 @@ export var Semesterauswahl = React.createClass({
 	return {
 	    aemter: [], // name, frat
 	    persons: [], // firstname, lastname, sex, frat
-	    semester: "SS",
+	    semester: config().names.semesters[0],
 	    year: new Date().getFullYear()
 	};
     },
@@ -264,14 +259,14 @@ export var Semesterauswahl = React.createClass({
 		      <span className="icon-bar"></span>
 		      <span className="icon-bar"></span>
 		    </button>
-		    <a className="navbar-brand" href="#">Gipsburg-Aemterverwaltung</a>
+		    <a className="navbar-brand" href="#">{config().names.title}</a>
 		  </div>
 		  <div id="navbarCollapse" className="collapse navbar-collapse">
 		    <SemesterSwitcher onSwitch={this.changeSemester} defaultSemester={this.state.semester} defaultYear={this.state.year} />
 		    <ul className="nav pull-right">
 		      <li className="dropdown">
 			<a className="dropdown-toggle btn btn-default" href="#" data-toggle="dropdown" role="button">
-			  Person hinzufügen <strong className="caret"></strong>
+			  {config().names.add_person} <strong className="caret"></strong>
 			</a>
 			<div className="dropdown-menu dropdown-menu-right big-dropdown-menu">
 			  <AddPersonForm onPersonAdded={this.forceUpdate} />

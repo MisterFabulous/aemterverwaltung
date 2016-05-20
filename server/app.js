@@ -20,6 +20,6 @@ app
     .get('/services/semester', db.availableSemesters)
     .post('/services/update_belegungen', db.updateBelegungen)
     .post('/services/add_person', db.addPerson)
-    .listen(config().port, () => {
-	console.log('Server running at http://' + config().host + ':' + config().port + '/');
+    .listen(config().connection.port, () => {
+	console.log('Server running at http://' + config().connection.host + ':' + config().connection.port + '/');
     });
