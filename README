@@ -14,6 +14,9 @@ You maybe want to use a version manager like 'n' or 'nvm' for that.
 7. Setup configuration file:
   a) cp config.tmpl.js config.js
   b) Edit config.js to fit your needs
-8. Run `gulp`
-9. Run `gulp serve`
-10. Open a browser and open your url
+8. Setup stylesheet file:
+  c) cp app/styles/organizations.tmpl.scss app/styles/organizations.scss
+  d) Edit it to fit your needs
+9. Run `gulp`
+10. Run `gulp serve`
+11. Open a browser and open your url
