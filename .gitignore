@@ -6,3 +6,4 @@ dump/
 config.js
 *~
 npm-debug.log
+app/styles/organizations.scss

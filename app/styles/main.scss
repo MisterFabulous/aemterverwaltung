@@ -3,30 +3,12 @@ $icon-font-path: "/fonts/bootstrap/";
 @import "react-widgets/dist/css/react-widgets";
 @import "fuelux/dist/css/fuelux.min";
 
-$aln-blue: #8092DE;
-$aln-silver: #939496;
-$aln-black: #000;
-
-$lae-blue: blue;
+@import "organizations.scss";
 
 body {
   background: white;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
-}
-
-.alania {
-    background: $aln-blue;
-}
-
-.laetitia {
-    background: $lae-blue;
-    color: $aln-silver;
-}
-
-.common {
-    background: black;
-    color: white;
 }
 
 .aemter-table {
