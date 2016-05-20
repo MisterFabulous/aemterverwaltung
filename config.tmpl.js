@@ -12,7 +12,13 @@ module.exports = function() {
 	    vorstand: ['President', 'Vice-President', 'Secretary', 'Treasurer', 'Spokesman'],
 	    title: 'Job administration',
 	    switch_semester: 'Switch semester',
-	    add_person: 'Add person',
+	    add_person: {
+		button: 'Add person',
+		firstname: 'Firstname',
+		lastname: 'Lastname',
+		org: 'Organization',
+		sex: 'Sex'
+	    },
 	    managements: {
 		'alania': 'Management of organization 1',
 		'laetitia': 'Management of organization 2'

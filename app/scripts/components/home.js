@@ -175,19 +175,19 @@ var AddPersonForm = React.createClass({
 	return (
 	    <form className="form-horizontal" role="form" onSubmit={this.addPerson}>
 	      <div className="form-group">
-		<label className="control-label col-sm-4 add-person-label" for="addperson-firstname">Vorname</label>
+		<label className="control-label col-sm-4 add-person-label" for="addperson-firstname">{config().names.add_person.firstname}</label>
 		<div className="col-sm-8">
 		  <input type="text" className="form-control" id="addperson-firstname" />
 		</div>
 	      </div>
 	      <div className="form-group">
-		<label className="control-label col-sm-4 add-person-label" for="addperson-lastname">Nachname</label>
+		<label className="control-label col-sm-4 add-person-label" for="addperson-lastname">{config().names.add_person.lastname}</label>
 		<div className="col-sm-8">
 		  <input type="text" className="form-control" id="addperson-lastname" />
 		</div>
 	      </div>
 	      <div className="form-group">
-		<label className="control-label col-sm-4 add-person-label" for="addperson-org">Zugehörigkeit</label>
+		<label className="control-label col-sm-4 add-person-label" for="addperson-org">{config().names.add_person.org}</label>
 		<div className="col-sm-8">
 		  <select className="form-control" id="addperson-org" defaultValue="alania">
 		    {config().names.orgs.map(createOption)}
@@ -195,7 +195,7 @@ var AddPersonForm = React.createClass({
 		</div>
 	      </div>
 	      <div className="form-group">
-		<label className="control-label col-sm-4 add-person-label" for="addperson-sex">Geschlecht</label>
+		<label className="control-label col-sm-4 add-person-label" for="addperson-sex">{config().names.add_person.sex}</label>
 		<div className="col-sm-8">
 		  <select name="sex" className="form-control" id="addperson-sex" defaultValue="male">
 		    {config().names.sexs.map(createOption)}
@@ -204,7 +204,7 @@ var AddPersonForm = React.createClass({
 	      </div>
 	      <div className="form-group">
 		<div className="col-sm-offset-4 col-sm-8">
-		  <button type="submit" className="btn btn-default">{config().names.add_person}</button>
+		  <button type="submit" className="btn btn-default">{config().names.add_person.button}</button>
 		</div>
 	      </div>
 	    </form>
@@ -272,7 +272,7 @@ export var Semesterauswahl = React.createClass({
 		    <ul className="nav pull-right">
 		      <li className="dropdown">
 			<a className="dropdown-toggle btn btn-default" href="#" data-toggle="dropdown" role="button">
-			  {config().names.add_person} <strong className="caret"></strong>
+			  {config().names.add_person.button} <strong className="caret"></strong>
 			</a>
 			<div className="dropdown-menu dropdown-menu-right big-dropdown-menu">
 			  <AddPersonForm onPersonAdded={this.forceUpdate} />
