@@ -14,7 +14,7 @@ var config = require('../../../config');
 var capitalizeFirstLetter = (word) =>
     word.charAt(0).toUpperCase() + word.slice(1);
 
-var serverURL = 'http://localhost/services/';
+var serverURL = 'http://' + config().connection.host + '/services/';
 
 var EditablePersons = onClickOutside(React.createClass({
     getInitialState() {
