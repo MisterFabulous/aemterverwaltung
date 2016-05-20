@@ -19,15 +19,15 @@ Here you can find a running [demo instance](http://vps281026.ovh.net/).
 
 3. Get the latest mongodb version
 4. Install some packages with npm globally:
-  1. npm install -g bower gulp node-gyp
+  1. `npm install -g bower gulp node-gyp`
 5. Run `npm install`
   1. In case of a contextify-error, you maybe need to install g++-multilib on your system
 6. Run `bower install`
 7. Setup configuration file:
-  1. cp config.tmpl.js config.js
+  1. `cp config.tmpl.js config.js`
   2. Edit config.js to fit your needs
 8. Setup stylesheet file:
-  1. cp app/styles/organizations.tmpl.scss app/styles/organizations.scss
+  1. `cp app/styles/organizations.tmpl.scss app/styles/organizations.scss`
   2. Edit it to fit your needs
 9. Run `gulp`
 10. Run `gulp serve`
