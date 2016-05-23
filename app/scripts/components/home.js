@@ -15,6 +15,7 @@ var capitalizeFirstLetter = (word) =>
     word.charAt(0).toUpperCase() + word.slice(1);
 
 var serverURL = 'http://' + config().connection.host + '/services/';
+var orgsWithCommon = config().names.orgs.concat(['common']);
 
 var EditablePersons = onClickOutside(React.createClass({
     getInitialState() {
@@ -190,7 +191,7 @@ var AddPersonForm = React.createClass({
 		<label className="control-label col-sm-4 add-person-label" for="addperson-org">{config().names.add_person.org}</label>
 		<div className="col-sm-8">
 		  <select className="form-control" id="addperson-org" defaultValue="alania">
-		    {config().names.orgs.map(createOption)}
+		    {orgsWithCommon.map(createOption)}
 		  </select>
 		</div>
 	      </div>
