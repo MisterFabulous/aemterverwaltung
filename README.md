@@ -1,14 +1,10 @@
 ## Synopsis
 
-This is a small project for administration of the person to job assignments of one or more organizations.
+This is a small project for the administration of the person to job assignments of one or more organizations.
 They can each have a management and also distinct jobs, which can be defined dynamically in the database. Additionally it's possible to define common jobs, which can be done by anybody of the organizations.
-Jobs can be assigned many persons, each editable in place.
+Jobs can be assigned to many persons, each editable in place.
 The whole application is build for maximum comfortability of the user and permanent data integrity.
-It's not possible to assign a job to a person, which does not exist or is misspelled.
-
-## Demo
-
-Here you can find a running [demo instance](http://vps281026.ovh.net/).
+Therefore e.g. it's not possible to assign a job to a person, which does not exist or is misspelled.
 
 ## Installation
 
